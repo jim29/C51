@@ -1,0 +1,85 @@
+C51 COMPILER V9.57.0.0   SEGMENT                                                           05/02/2020 18:25:33 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SEGMENT
+OBJECT MODULE PLACED IN .\Objects\segment.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\segment.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\segment.lst) OBJECT(.\Objects\segment.obj)
+
+line level    source
+
+   1          #include <segment.h>
+   2          #include <global.h>
+   3          #define SEG_N 8 //显示位数
+   4          
+   5          u8 SegContent[] = {
+   6                  10, 10, 10, 10, 10, 10, 10, 10
+   7          };
+   8          u8 code SegTable[] = {
+   9                  0xc0, 0xf9, 0xa4, 0xb0, 0x99, 0x92, 0x82, 0xf8, 0x80, 0x90,
+  10                  0xFF,
+  11                  0xBF,
+  12                  0xC6,
+  13                  0x8C,
+  14                  0x86,
+  15                  0xC8
+  16          };      //数码管码表0~9,
+  17              // 空 10
+  18                  // -  11
+  19                  // C  12
+  20                  // P  13
+  21                  // E  14
+  22                  // N  15
+  23                  
+  24          /*
+  25          u8 code SegSit[] = {
+  26                  3, 4, 5, 6, 7
+  27          };      //数码管显示位置
+  28          */
+  29          
+  30          
+  31          /*
+  32           *      显示单个数字
+  33           *      @param
+  34           *      sit     数字位置
+  35           *  val 数字值
+  36           */
+  37          void SegDisp(u8 sit, u8 val)
+  38          {
+  39   1              LatchCtrl(SEG_COM_ID, 1 << sit);
+  40   1              LatchCtrl(SEG_SEC_ID, SegTable[val]);
+  41   1      }
+  42          
+  43          
+  44          /*
+  45           *      刷新数码管
+  46           */
+  47          void SegFresh()
+  48          {
+  49   1              static u8 seg_sit = 0;
+  50   1              SegDisp(seg_sit, SegContent[seg_sit]);
+  51   1              seg_sit ++;
+  52   1              if(seg_sit == SEG_N)    seg_sit = 0;
+  53   1      }
+  54          
+C51 COMPILER V9.57.0.0   SEGMENT                                                           05/02/2020 18:25:33 PAGE 2   
+
+  55          
+  56          
+  57                  
+  58                  
+  59                  
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     54    ----
+   CONSTANT SIZE    =     16    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      9       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

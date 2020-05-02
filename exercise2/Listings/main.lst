@@ -1,0 +1,286 @@
+C51 COMPILER V9.57.0.0   MAIN                                                              05/02/2020 18:25:33 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEND P
+                    -RINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <STC15F2K60S2.h>
+   2          #include <intrins.h>
+   3          #include <global.h>
+   4          #include <segment.h>
+   5          #include <timer.h>
+   6          #include <onewire.h>
+   7          #include <relay.h>
+   8          #include <keyboard.h>
+   9          #include <iic.h>
+  10          #define Address 0x22
+  11          
+  12          u16 SysTick = 0;
+  13          u8 KeyPressed = NONE;
+  14          u8 State = IDLE;
+  15          extern u8 SegContent[]; //数码管显示内容
+  16          u8 PW_Saved[] = {8, 8, 8, 8, 8, 8};     //保存的密码(本地)
+  17          u8 PW_Input[] = {10,10,10,10,10,10};//输入的数字
+  18          u8 InputCnt = 0;//输入个数
+  19          u8 WaitFlag = 0;//等待5s
+  20          u16 WaitCnt = 0;
+  21          u8 ChangeFlag = 0;
+  22          
+  23          
+  24          void HandleEvent(u8 key);
+  25          void IdleInit();
+  26          void OpenInit();
+  27          void Delay5000ms();
+  28          void SaveNewPW();
+  29          
+  30          
+  31          bit WriteFlag = FAIL;
+  32          bit ReadFlag = FAIL;
+  33          
+  34          
+  35          /*----------------------
+  36          -------main-------------
+  37          -----------------------*/
+  38          void main()
+  39          {
+  40   1              //初始化
+  41   1              SysInit();
+  42   1              Timer0Init();
+  43   1              IdleInit();
+  44   1              //读取存储的密码
+  45   1              ReadFlag = AT24C02_Read(Address, PW_Saved, 6);
+  46   1              while(ReadFlag == FAIL){
+  47   2                      ReadFlag = AT24C02_Read(Address, PW_Saved, 6);
+  48   2              }
+  49   1              while(1){
+  50   2                      u16 SysTickTmp = SysTick;
+  51   2                      
+  52   2                      //10ms扫描键盘
+  53   2                      if(SysTick % 20 == 0){  
+  54   3                              KeyPressed = KeyBoardScan();
+C51 COMPILER V9.57.0.0   MAIN                                                              05/02/2020 18:25:33 PAGE 2   
+
+  55   3                              if(KeyPressed != NONE)          HandleEvent(KeyPressed);
+  56   3                      }
+  57   2                      //计时器判定
+  58   2                      if(WaitFlag == 1){
+  59   3                              WaitCnt ++;
+  60   3                              if(WaitCnt >= 10000){ //5s
+  61   4                                      State = IDLE;
+  62   4                                      IdleInit();
+  63   4                              }
+  64   3                      }
+  65   2                      //20s设定溢出
+  66   2                      if(SysTick > 40000)     SysTick = 0;
+  67   2                      while(SysTickTmp == SysTick);
+  68   2              }
+  69   1      }
+  70          
+  71          
+  72          // 500us 系统刷新
+  73          void T0Inter() interrupt 1
+  74          {
+  75   1              SysTick ++;
+  76   1              //数码管刷新 3ms
+  77   1              if(SysTick % 6 == 0)    
+  78   1                      SegFresh();
+  79   1      }       
+  80          
+  81          
+  82          /*
+  83           *      处理按键事件
+  84           */
+  85          void HandleEvent(u8 key)
+  86          {
+  87   1              u8 i = 0; 
+  88   1              //输入的是数字
+  89   1              if(key <= 9){
+  90   2                      //输入模式
+  91   2                      if(State == INPUT_MOD){
+  92   3                              //挪动数字
+  93   3                              for(i = 3; i <= 7; i++){
+  94   4                                      SegContent[i-1] = SegContent[i];
+  95   4                              }
+  96   3                              SegContent[7] = key;
+  97   3                              InputCnt ++;
+  98   3                              if(InputCnt == 6){
+  99   4                                      //输入完成，检查密码
+ 100   4                                      for(i = 2; i <= 7; i++){
+ 101   5                                              if(SegContent[i] != PW_Saved[i-2]){//出现错误
+ 102   6                                                      LatchCtrl(LED_ID, 0xFE);//L1亮
+ 103   6                                                      Delay5000ms();//亮5s
+ 104   6                                                      LatchCtrl(LED_ID, 0xFF);
+ 105   6                                                      State = IDLE;
+ 106   6                                                      IdleInit();
+ 107   6                                                      break;
+ 108   6                                              }
+ 109   5                                      }
+ 110   4                                      if(i == 8){//输入正确
+ 111   5                                              State = OPEN_MOD;
+ 112   5                                              OpenInit();
+ 113   5                                      }
+ 114   4                              }
+ 115   3                      }
+ 116   2                      //更换密码模式
+C51 COMPILER V9.57.0.0   MAIN                                                              05/02/2020 18:25:33 PAGE 3   
+
+ 117   2                      else if(State == CHANGE_MOD && ChangeFlag == 0){
+ 118   3                              //挪动数字
+ 119   3                              for(i = 3; i <= 7; i++){
+ 120   4                                      SegContent[i-1] = SegContent[i];
+ 121   4                              }
+ 122   3                              SegContent[7] = key;
+ 123   3                              InputCnt ++;
+ 124   3                              if(InputCnt == 6){
+ 125   4                                      //输入完成
+ 126   4                                      ChangeFlag = 1; 
+ 127   4                              }
+ 128   3                      }
+ 129   2                      else
+ 130   2                              ;
+ 131   2              }
+ 132   1              //输入的是指令
+ 133   1              else{
+ 134   2                      if(key == INPUT){
+ 135   3                              if(State == IDLE){
+ 136   4                                      State = INPUT_MOD;
+ 137   4                                      SegContent[0] = 11;     //"-"
+ 138   4                                      LatchCtrl(LED_ID, 0xBF);//L7亮
+ 139   4                              }
+ 140   3                      }
+ 141   2                      else if(key == CHANGE){
+ 142   3                              if(State == OPEN_MOD){
+ 143   4                                      State = CHANGE_MOD;
+ 144   4                                      SegContent[0] = 12;//"C"
+ 145   4                                      WaitFlag = 0; //中断计时
+ 146   4                                      WaitCnt = 0;
+ 147   4                                      LatchCtrl(LED_ID, 0x7F);//L8亮
+ 148   4                                      for(i = 1; i < 8; i++)  //清屏
+ 149   4                                              SegContent[i] = 10;
+ 150   4                              }
+ 151   3                              else if(State == CHANGE_MOD && ChangeFlag == 1){
+ 152   4                                      //存储新密码
+ 153   4                                      SaveNewPW();
+ 154   4                                      //更新完成，退出进入开门界面
+ 155   4                                      ChangeFlag = 0;
+ 156   4                                      State = OPEN_MOD;
+ 157   4                                      OpenInit();
+ 158   4                              }
+ 159   3                      }
+ 160   2                      else if(key == CLEAR){
+ 161   3                              if(State == INPUT_MOD || State == CHANGE_MOD){
+ 162   4                                      InputCnt = 0;
+ 163   4                                      ChangeFlag = 0;
+ 164   4                                      for(i = 1; i < 8; i++)
+ 165   4                                              SegContent[i] = 10;
+ 166   4                              }
+ 167   3                      }
+ 168   2                      else{
+ 169   3                              ;
+ 170   3                      }
+ 171   2              }
+ 172   1      }
+ 173           
+ 174           
+ 175          /*
+ 176           * Idle模式处理
+ 177           */
+ 178          void IdleInit()
+C51 COMPILER V9.57.0.0   MAIN                                                              05/02/2020 18:25:33 PAGE 4   
+
+ 179          {
+ 180   1              u8 i;
+ 181   1              InputCnt = 0;
+ 182   1              Relay_m1();
+ 183   1              LatchCtrl(LED_ID, 0xFF);
+ 184   1              InputCnt = 0;
+ 185   1              WaitCnt = 0;
+ 186   1              WaitFlag = 0;
+ 187   1              for(i = 0; i < 8; i++)
+ 188   1                      SegContent[i] = 10;
+ 189   1      }
+ 190          
+ 191          /*
+ 192           * 开门模式处理
+ 193           */
+ 194          void OpenInit()
+ 195          {
+ 196   1              InputCnt = 0;
+ 197   1              LatchCtrl(LED_ID, 0xFF);
+ 198   1              //显示OPEN
+ 199   1              SegContent[0] = 0;
+ 200   1              SegContent[1] = 10;
+ 201   1              SegContent[2] = 10;
+ 202   1              SegContent[3] = 10;
+ 203   1              SegContent[4] = 0;
+ 204   1              SegContent[5] = 13;
+ 205   1              SegContent[6] = 14;
+ 206   1              SegContent[7] = 15;
+ 207   1              Relay_m2();//打开继电器
+ 208   1              WaitFlag = 1; //开始等待
+ 209   1      }
+ 210          
+ 211          /*
+ 212           *      延时5s
+ 213           */ 
+ 214          void Delay5000ms()              //@11.0592MHz
+ 215          {
+ 216   1              unsigned char i, j, k;
+ 217   1      
+ 218   1              _nop_();
+ 219   1              _nop_();
+ 220   1              i = 211;
+ 221   1              j = 30;
+ 222   1              k = 11;
+ 223   1              do
+ 224   1              {
+ 225   2                      do
+ 226   2                      {
+ 227   3                              while (--k);
+ 228   3                      } while (--j);
+ 229   2              } while (--i);
+ 230   1      }
+ 231           
+ 232           
+ 233          /*
+ 234           *      存储新密码
+ 235           */
+ 236          void SaveNewPW()
+ 237          {
+ 238   1              u8 i;
+ 239   1              //本地更新
+ 240   1              for(i = 0; i < 6; i++)
+C51 COMPILER V9.57.0.0   MAIN                                                              05/02/2020 18:25:33 PAGE 5   
+
+ 241   1                      PW_Saved[i] = SegContent[i+2];
+ 242   1              //Flash更新
+ 243   1              WriteFlag = AT24C02_Write(Address, PW_Saved, 6);
+ 244   1              while(WriteFlag == FAIL){
+ 245   2                      WriteFlag = AT24C02_Write(Address, PW_Saved, 6);
+ 246   2              }
+ 247   1      }
+ 248           
+ 249          
+ 250          
+ 251          
+ 252           
+ 253           
+ 254           
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    658    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     21       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

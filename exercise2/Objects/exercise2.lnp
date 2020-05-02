@@ -1,0 +1,11 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\global.obj",
+".\Objects\segment.obj",
+".\Objects\timer.obj",
+".\Objects\onewire.obj",
+".\Objects\relay.obj",
+".\Objects\keyboard.obj",
+".\Objects\iic.obj" 
+TO ".\Objects\exercise2" 
+PRINT(".\Listings\exercise2.m51") RAMSIZE(256) 
