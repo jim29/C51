@@ -1,5 +1,6 @@
 #include <global.h>
 #include <STC15F2K60S2.h>
+#include <intrins.h>
 
 /*
  *	138，573锁存控制
@@ -10,8 +11,10 @@
 void LatchCtrl(u8 ID, u8 val)
 {
 	P0 = val;
-	P2 = ID << 5;
-	P2 = 0x00;
+	P2 = (P2 & 0x1F) | (ID << 5);
+	_nop_();_nop_();_nop_();_nop_();
+	P2 = P2 & 0x1F;
+	_nop_();_nop_();_nop_();_nop_();
 	P0 = 0x00;
 }
 
