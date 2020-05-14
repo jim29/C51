@@ -1,0 +1,48 @@
+Log at : 2020/5/14|21:33:33|GMT+0800
+
+[TypeError: Cannot read property 'Project' of null
+	at C51project.<anonymous> (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:5619)
+	at Generator.next (<anonymous>)
+	at fulfilled (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:347)
+	at runMicrotasks (<anonymous>)
+	at processTicksAndRejections (internal/process/task_queues.js:85:5)]
+[TypeError: Cannot read property 'Project' of null
+	at C51project.<anonymous> (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:5619)
+	at Generator.next (<anonymous>)
+	at fulfilled (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:347)
+	at runMicrotasks (<anonymous>)
+	at processTicksAndRejections (internal/process/task_queues.js:85:5)]
+---- project closed ----
+
+Log at : 2020/5/14|21:34:04|GMT+0800
+
+[TypeError: Cannot read property 'Project' of null
+	at C51project.<anonymous> (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:5619)
+	at Generator.next (<anonymous>)
+	at fulfilled (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:347)
+	at runMicrotasks (<anonymous>)
+	at processTicksAndRejections (internal/process/task_queues.js:85:5)]
+[TypeError: Cannot read property 'Project' of null
+	at C51project.<anonymous> (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:5619)
+	at Generator.next (<anonymous>)
+	at fulfilled (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:347)
+	at runMicrotasks (<anonymous>)
+	at processTicksAndRejections (internal/process/task_queues.js:85:5)]
+---- project closed ----
+
+Log at : 2020/5/14|21:34:49|GMT+0800
+
+[TypeError: Cannot read property 'Project' of null
+	at C51project.<anonymous> (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:5619)
+	at Generator.next (<anonymous>)
+	at fulfilled (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:347)
+	at runMicrotasks (<anonymous>)
+	at processTicksAndRejections (internal/process/task_queues.js:85:5)]
+[TypeError: Cannot read property 'Project' of null
+	at C51project.<anonymous> (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:5619)
+	at Generator.next (<anonymous>)
+	at fulfilled (c:\Users\Admin\.vscode\extensions\cl.keil-assistant-1.2.1\out\src\extension.js:1:347)
+	at runMicrotasks (<anonymous>)
+	at processTicksAndRejections (internal/process/task_queues.js:85:5)]
+---- project closed ----
+

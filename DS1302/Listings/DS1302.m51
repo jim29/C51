@@ -1,0 +1,188 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    05/14/2020  22:14:18  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+D:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\global.obj, .\Objects\main.obj TO .\Objects\DS1302 PRINT (.
+>> \Listings\DS1302.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\STARTUP.obj (?C_STARTUP)
+  .\Objects\global.obj (GLOBAL)
+  .\Objects\main.obj (MAIN)
+
+
+LINK MAP OF MODULE:  .\Objects\DS1302 (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     07FDH                  *** GAP ***
+            CODE    0800H     001CH     UNIT         ?PR?_LATCHCTRL?GLOBAL
+            CODE    081CH     0015H     UNIT         ?PR?SYSINIT?GLOBAL
+            CODE    0831H     000CH     UNIT         ?C_C51STARTUP
+            CODE    083DH     0005H     UNIT         ?PR?DELAY?GLOBAL
+            CODE    0842H     0005H     UNIT         ?PR?MAIN?MAIN
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\DS1302 (?C_STARTUP)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN
+  +--> ?PR?SYSINIT?GLOBAL
+
+?PR?SYSINIT?GLOBAL
+  +--> ?PR?_LATCHCTRL?GLOBAL
+
+?PR?_LATCHCTRL?GLOBAL
+  +--> ?PR?DELAY?GLOBAL
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\DS1302 (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2020  22:14:18  PAGE 2
+
+
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0831H         SEGMENT       ?C_C51STARTUP
+  I:0008H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0834H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0831H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:0831H         LINE#         133
+  C:0833H         LINE#         134
+  C:0834H         LINE#         135
+  C:0835H         LINE#         136
+  C:0837H         LINE#         185
+  C:083AH         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        GLOBAL
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00C0H         PUBLIC        P4
+  D:00C8H         PUBLIC        P5
+  D:00E8H         PUBLIC        P6
+  D:00F8H         PUBLIC        P7
+  C:0800H         PUBLIC        _LatchCtrl
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  D:00D8H         PUBLIC        CCON
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:081CH         PUBLIC        SysInit
+  C:083DH         PUBLIC        Delay
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          DELAY
+  C:083DH         LINE#         7
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2020  22:14:18  PAGE 3
+
+
+  C:083DH         LINE#         8
+  C:083DH         LINE#         9
+  C:083EH         LINE#         10
+  C:083FH         LINE#         11
+  C:0840H         LINE#         12
+  C:0841H         LINE#         13
+  -------         ENDPROC       DELAY
+  -------         PROC          _LATCHCTRL
+  D:0007H         SYMBOL        ID
+  D:0005H         SYMBOL        val
+  C:0800H         LINE#         22
+  C:0800H         LINE#         23
+  C:0800H         LINE#         24
+  C:0802H         LINE#         25
+  C:080FH         LINE#         26
+  C:0812H         LINE#         27
+  C:0815H         LINE#         28
+  C:0818H         LINE#         29
+  C:081BH         LINE#         30
+  -------         ENDPROC       _LATCHCTRL
+  -------         PROC          SYSINIT
+  C:081CH         LINE#         39
+  C:081CH         LINE#         40
+  C:081CH         LINE#         41
+  C:0823H         LINE#         42
+  C:082AH         LINE#         43
+  -------         ENDPROC       SYSINIT
+  -------         ENDMOD        GLOBAL
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00C0H         PUBLIC        P4
+  D:00C8H         PUBLIC        P5
+  D:00E8H         PUBLIC        P6
+  D:00F8H         PUBLIC        P7
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  D:00D8H         PUBLIC        CCON
+  C:0842H         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:0842H         LINE#         9
+  C:0842H         LINE#         10
+  C:0842H         LINE#         11
+  C:0845H         LINE#         12
+  C:0845H         LINE#         14
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 004AH BYTE ( 3%) *
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  05/14/2020  22:14:18  PAGE 4
+
+
+******************************************************************************
+
+Program Size: data=9.0 xdata=0 code=74
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

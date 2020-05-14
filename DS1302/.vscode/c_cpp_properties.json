@@ -1,0 +1,35 @@
+{
+    "configurations": [
+        {
+            "name": "keil",
+            "includePath": [
+                "e:\\MaRuiyang_Files\\C51\\DS1302\\.\\Code",
+                "D:\\Keil_v5\\C51\\INC",
+                "e:\\MaRuiyang_Files\\C51\\DS1302\\."
+            ],
+            "defines": [
+                "__C51__",
+                "__KEIL_ASSISTANT__",
+                "reentrant=",
+                "conpact=",
+                "small=",
+                "large=",
+                "data=",
+                "idata=",
+                "pdata=",
+                "xdata=",
+                "code=",
+                "bit=char",
+                "sbit=char",
+                "sfr=char",
+                "sfr16=int",
+                "sfr32=int",
+                "_interrupt(x)=",
+                "_using(x)=",
+                "_at(x)="
+            ],
+            "intelliSenseMode": "${default}"
+        }
+    ],
+    "version": 4
+}
