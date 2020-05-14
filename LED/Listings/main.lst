@@ -1,0 +1,143 @@
+C51 COMPILER V9.57.0.0   MAIN                                                              01/20/2020 20:11:02 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          /*
+   2           * LED 点亮测试
+   3           *    2020/1/19 by MRY
+   4           *
+   5          */
+   6          
+   7          #include <reg51.h>
+   8          #include <intrins.h>
+   9          
+  10          #define uchar unsigned char
+  11          #define uint unsigned int
+  12          
+  13          
+  14          
+  15          /*
+  16           *  延时0.8s                 
+  17           *  时钟12Mhz
+  18           *  
+  19          */
+  20          
+  21          void delay()
+  22          {
+  23   1        uint i, j;
+  24   1        for (i = 0; i < 1000; i++) {
+  25   2          for (j = 0; j < 100; j++){
+  26   3                ;
+  27   3          }
+  28   2        }     
+  29   1      }
+  30          
+  31          
+  32          void flow_right()
+  33          {
+  34   1        uchar count = 8;
+  35   1        uchar aa = 0xFE;
+  36   1        while(count--) {
+  37   2          delay();
+  38   2          P2 = ((P2 & 0x1F) | 0x80);  // P2 = b100X XXXX 138译码Y4. LE = H
+  39   2          P0 = aa;    
+  40   2          P2 &= 0x1F;                 // P2 = b000X XXXX LE = L
+  41   2          aa = _cror_(aa, 1);
+  42   2        }
+  43   1      }
+  44          
+  45          void flow_left()
+  46          {
+  47   1        uchar count = 8;
+  48   1        uchar aa = 0xFE;
+  49   1        while(count--) {
+  50   2        delay();
+  51   2        P2 = ((P2 & 0x1F) | 0x80);  // P2 = b100X XXXX 138译码Y4. LE = H
+  52   2        P0 = aa;    
+  53   2        P2 &= 0x1F;                 // P2 = b000X XXXX LE = L
+  54   2        aa = _crol_(aa, 1);
+C51 COMPILER V9.57.0.0   MAIN                                                              01/20/2020 20:11:02 PAGE 2   
+
+  55   2        }
+  56   1      }
+  57          
+  58          void bling_led()
+  59          {
+  60   1        delay();
+  61   1        P2 = ((P2 & 0x1F) | 0x80);  // P2 = b100X XXXX 138译码Y4. LE = H
+  62   1        P0 = 0xFF;    
+  63   1        P2 &= 0x1F;                 // P2 = b000X XXXX LE = L
+  64   1        delay();
+  65   1        P2 = ((P2 & 0x1F) | 0x80);  // P2 = b100X XXXX 138译码Y4. LE = H
+  66   1        P0 = 0x00;    
+  67   1        P2 &= 0x1F;                 // P2 = b000X XXXX LE = L
+  68   1      }
+  69          
+  70          
+  71          /*************************************
+  72          *       main code
+  73          **************************************/
+  74          
+  75          void main()
+  76          {
+  77   1        
+  78   1        const uchar idle = 0;
+  79   1        const uchar flow_r = 1;
+  80   1        const uchar flow_l = 2;
+  81   1        const uchar bling = 3;
+  82   1        uchar state = idle;
+  83   1        uchar count = 8;
+  84   1        while (1){
+  85   2          switch (state) {
+  86   3          case 0:
+  87   3              state = flow_r;
+  88   3              break;
+  89   3          case 1:{
+  90   4              flow_right();
+  91   4              state = flow_l;
+  92   4              break;
+  93   4            }
+  94   3          case 2:{
+  95   4              flow_left();
+  96   4              state = bling;
+  97   4              break;
+  98   4            }
+  99   3          case 3:{
+ 100   4              count = 3;
+ 101   4              while(count--)
+ 102   4                bling_led();
+ 103   4              state = flow_r;
+ 104   4              break;
+ 105   4            }       
+ 106   3          default:
+ 107   3              state = idle;
+ 108   3              
+ 109   3        }
+ 110   2        
+ 111   2        }
+ 112   1      }
+ 113              
+ 114              
+ 115          
+
+C51 COMPILER V9.57.0.0   MAIN                                                              01/20/2020 20:11:02 PAGE 3   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    215    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

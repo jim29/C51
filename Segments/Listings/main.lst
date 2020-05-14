@@ -1,0 +1,69 @@
+C51 COMPILER V9.57.0.0   MAIN                                                              01/21/2020 11:16:57 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          /*
+   2           *  静态数码管显示
+   3           *  循环0.5ms 依次显示0~9
+   4           *      2020/1/21 by MRY
+   5           */
+   6           
+   7          
+   8          #include <reg51.h>
+   9          
+  10          // 数码管共阳码表 0,1,2,3,4,5,6,7,8,9
+  11          unsigned char code seg_table[] = {
+  12            0xC0, 0xF9, 0xA4, 0xB0,
+  13            0x99, 0x92, 0x82, 0xF8,
+  14            0x80, 0x90};
+  15          
+  16          
+  17          // 延时Xms
+  18          void delay_ms(unsigned int x)
+  19          {
+  20   1        unsigned int i, j;
+  21   1        for (i = 0; i <= x; i++)
+  22   1          for(j = 0; j <= 120; j++)
+  23   1            ;
+  24   1      }
+  25          
+  26          
+  27          
+  28          void main()
+  29          {
+  30   1        while(1) {
+  31   2          unsigned char num;    
+  32   2          for (num = 0; num <= 9; num++) {
+  33   3            P2 = P2 | 0xE0;       // ABC = 111, Y7C = 1
+  34   3            P0 = seg_table[num];  // 显示num
+  35   3            P2 = P2 & 0x1F;       // ABC = 000, 锁存
+  36   3            P2 = P2 | 0xD0;       // ABC = 110, Y6C = 1
+  37   3            P0 = 0xFF;            // 点亮所有位
+  38   3            P2 = P2 & 0x1F;       // ABC = 000, 锁存
+  39   3            delay_ms(1000);
+  40   3          }
+  41   2        }
+  42   1      
+  43   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     76    ----
+   CONSTANT SIZE    =     10    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+C51 COMPILER V9.57.0.0   MAIN                                                              01/21/2020 11:16:57 PAGE 2   
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

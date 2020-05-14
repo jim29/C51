@@ -1,0 +1,88 @@
+C51 COMPILER V9.57.0.0   SEGMENT                                                           02/19/2020 19:02:34 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SEGMENT
+OBJECT MODULE PLACED IN .\Objects\segment.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE segment.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\s
+                    -egment.lst) TABS(2) OBJECT(.\Objects\segment.obj)
+
+line level    source
+
+   1          #include <segment.h>
+   2          #include <reg51.h>
+   3          
+   4          
+   5          
+   6          // 数码管共阳码表 0,1,2,3,4,5,6,7,8,9
+   7          unsigned char code seg_table[] = {
+   8            0xC0, 0xF9, 0xA4, 0xB0,
+   9            0x99, 0x92, 0x82, 0xF8,
+  10            0x80, 0x90};
+  11          
+  12          
+  13          
+  14          
+  15          
+  16          
+  17          // =====延时ms======
+  18          void DelayMs(unsigned char xms)
+  19          {
+  20   1        unsigned char i, j;
+  21   1        for (i = 0; i < 120; i ++)
+  22   1          for (j = 0; j < xms; j++)
+  23   1            ;
+  24   1      }
+  25          
+  26          
+  27          
+  28          
+  29          // ======数码管显示=======
+  30          // 输入显示数字 uchar 两位
+  31          void SegDisplay(unsigned char num)
+  32          {
+  33   1        unsigned char ge, shi;
+  34   1        ge = num % 10;
+  35   1        shi = num / 10;
+  36   1        
+  37   1        
+  38   1        // 显示十位
+  39   1        P0 = 0x40;    // com7 = 1
+  40   1        // P2 = 110x XXXX
+  41   1        P2 |= 0xC0;   // 置1
+  42   1        P2 &= 0xDF;   // 置0
+  43   1        P2 = 0x00;    
+  44   1        P0 = seg_table[shi];
+  45   1        // P2 = 111x XXXX
+  46   1        P2 |= 0xE0;   // 置1
+  47   1        P2 = 0x00;
+  48   1        DelayMs(5);
+  49   1        
+  50   1        
+  51   1        // 显示个位
+  52   1        P0 = 0x80;    // com8 = 1
+  53   1        // P2 = 110x XXXX
+  54   1        P2 |= 0xC0;   // 置1
+C51 COMPILER V9.57.0.0   SEGMENT                                                           02/19/2020 19:02:34 PAGE 2   
+
+  55   1        P2 &= 0xDF;   // 置0
+  56   1        P2 = 0x00;
+  57   1        P0 = seg_table[ge];
+  58   1        // P2 = 111x XXXX
+  59   1        P2 |= 0xE0;   // 置1
+  60   1        P2 = 0x00;
+  61   1        DelayMs(5);
+  62   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     89    ----
+   CONSTANT SIZE    =     10    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

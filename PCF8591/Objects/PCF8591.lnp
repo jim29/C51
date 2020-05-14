@@ -1,0 +1,10 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\global.obj",
+".\Objects\keyboard.obj",
+".\Objects\segment.obj",
+".\Objects\timer.obj",
+".\Objects\iic.obj",
+".\Objects\PCF8591.obj" 
+TO ".\Objects\PCF8591" 
+PRINT(".\Listings\PCF8591.m51") RAMSIZE(256) 

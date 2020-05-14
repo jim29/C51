@@ -1,0 +1,18 @@
+C51 COMPILER V9.57.0.0   TIMER                                                             03/29/2020 11:39:08 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE TIMER
+OBJECT MODULE PLACED IN .\Objects\timer.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE timer.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\tim
+                    -er.lst) TABS(2) OBJECT(.\Objects\timer.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          #include <timer.h>
+   3          
+   4          #define
+*** ERROR C301 IN LINE 4 OF timer.c: identifier expected
+   5          
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

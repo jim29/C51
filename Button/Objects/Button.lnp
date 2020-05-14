@@ -1,0 +1,5 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\segment.obj" 
+TO ".\Objects\Button" 
+PRINT(".\Listings\Button.m51")

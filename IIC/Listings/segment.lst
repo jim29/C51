@@ -1,0 +1,57 @@
+C51 COMPILER V9.57.0.0   SEGMENT                                                           05/02/2020 18:12:27 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SEGMENT
+OBJECT MODULE PLACED IN .\Objects\segment.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\segment.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\segment.lst) OBJECT(.\Objects\segment.obj)
+
+line level    source
+
+   1          #include <global.h>
+   2          #include <STC15F2K60S2.H>
+   3          #include <segment.h>
+   4          
+   5          u8 code SegTable[] = {
+   6                  0xc0, 0xf9, 0xa4, 0xb0, 0x99, 0x92, 0x82, 0xf8, 0x80, 0x90, 0xFF
+   7          };      //数码管0~9, 空
+   8          
+   9          u8 SegContent[] = {1, 2, 3, 4, 10, 10, 10, 10};
+  10          
+  11          /*
+  12           *      数码管单位显示
+  13           * @param
+  14           * sit 显示位置 0~7
+  15           * val 显示值
+  16           */
+  17          void SegDisp(u8 sit, u8 val)
+  18          {
+  19   1              LatchCtrl(SEG_SEC_ID, 0xFF);
+  20   1              LatchCtrl(SEG_COM_ID, 1 << sit);
+  21   1              LatchCtrl(SEG_SEC_ID, SegTable[val]);  
+  22   1      }
+  23          
+  24          /*
+  25           *      数码管刷新
+  26           */
+  27          void SegFresh()
+  28          {
+  29   1              static i = 0;
+  30   1              SegDisp(i, SegContent[i]);
+  31   1              i ++;
+  32   1              if(i == 8)      i = 0;
+  33   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     72    ----
+   CONSTANT SIZE    =     11    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     10       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

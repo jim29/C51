@@ -1,0 +1,51 @@
+C51 COMPILER V9.57.0.0   GLOBAL                                                            05/02/2020 18:12:27 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE GLOBAL
+OBJECT MODULE PLACED IN .\Objects\global.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\global.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEND
+                    - PRINT(.\Listings\global.lst) OBJECT(.\Objects\global.obj)
+
+line level    source
+
+   1          #include <global.h>
+   2          #include <STC15F2K60S2.H>
+   3          
+   4          
+   5          /*
+   6           *      锁存器控制
+   7           *      @param
+   8           *      ID      控制器序号
+   9           *      val     P0值
+  10           */
+  11          void LatchCtrl(u8 ID, u8 val)
+  12          {
+  13   1              P0 = val;
+  14   1              P2 = ID << 5;
+  15   1              P2 = 0x00;
+  16   1              P0 = 0x00;      //默认拉低
+  17   1      }
+  18          
+  19          /*
+  20           *      系统初始化
+  21           */
+  22          void SysInit()
+  23          {
+  24   1              LatchCtrl(ULN_ID, 0x00);                //关闭蜂鸣器
+  25   1              LatchCtrl(LED_ID, 0xFF);                //关灯
+  26   1              LatchCtrl(SEG_COM_ID, 0x00);    //关数码管
+  27   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     35    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
