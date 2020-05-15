@@ -11,5 +11,5 @@ typedef unsigned int u16;
 
 void LatchCtrl(u8 ID, u8 val);
 void SysInit();
-
+void Delay();
 #endif
