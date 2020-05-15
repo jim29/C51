@@ -1,16 +1,17 @@
 /*
-  ³ÌĞòËµÃ÷: DS1302Çı¶¯³ÌĞò
-  Èí¼ş»·¾³: Keil uVision 4.10 
-  Ó²¼ş»·¾³: CT107µ¥Æ¬»ú×ÛºÏÊµÑµÆ½Ì¨ 8051£¬12MHz
-  ÈÕ    ÆÚ: 2011-8-9
+  ç¨‹åºè¯´æ˜: DS1302é©±åŠ¨ç¨‹åº
+  è½¯ä»¶ç¯å¢ƒ: Keil uVision 4.10 
+  ç¡¬ä»¶ç¯å¢ƒ: CT107å•ç‰‡æœºç»¼åˆå®è®­å¹³å° 8051ï¼Œ12MHz
+  æ—¥    æœŸ: 2011-8-9
 */
 
 #include <reg52.h>
 #include <intrins.h>
+#include <ds1302.h>
 
 sbit SCK = P1^7;		
 sbit SDA= P2^3;		
-sbit RST = P1^3;   // DS1302¸´Î»												
+sbit RST = P1^3;   // DS1302å¤ä½												
 
 void Write_Ds1302(unsigned  char temp) 
 {
@@ -55,4 +56,15 @@ unsigned char Read_Ds1302_Byte ( unsigned char address )
 	SDA=0;	_nop_();
 	SDA=1;	_nop_();
 	return (temp);			
+}
+
+
+/**
+ *  DS1302åˆå§‹åŒ–ï¼Œå†™å…¥24å°æ—¶59åˆ†59ç§’
+ */
+void DS1302_Init()
+{
+    Write_Ds1302_Byte(0x80, 0x59);    //å†™å…¥59s
+    Write_Ds1302_Byte(0x82, 0x59);    //å†™å…¥59min
+    Write_Ds1302_Byte(0x84, 0x24);    //å†™å…¥24h
 }

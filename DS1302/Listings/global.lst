@@ -1,4 +1,4 @@
-C51 COMPILER V9.57.0.0   GLOBAL                                                            05/14/2020 22:21:07 PAGE 1   
+C51 COMPILER V9.57.0.0   GLOBAL                                                            05/15/2020 23:35:16 PAGE 1   
 
 
 C51 COMPILER V9.57.0.0, COMPILATION OF MODULE GLOBAL
@@ -36,7 +36,7 @@ line level    source
   26   1          Delay();
   27   1          P2 = P2 & 0x1F;
   28   1          Delay();
-  29   1          P0 = 0x00;
+  29   1                      P0 = 0x00;
   30   1      }
   31          
   32          
@@ -62,7 +62,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
-C51 COMPILER V9.57.0.0   GLOBAL                                                            05/14/2020 22:21:07 PAGE 2   
+C51 COMPILER V9.57.0.0   GLOBAL                                                            05/15/2020 23:35:16 PAGE 2   
 
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

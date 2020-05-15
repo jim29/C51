@@ -26,7 +26,7 @@ void LatchCtrl(u8 ID, u8 val)
     Delay();
     P2 = P2 & 0x1F;
     Delay();
-    P0 = 0x00;
+		P0 = 0x00;
 }
 
 

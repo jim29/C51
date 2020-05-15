@@ -379,6 +379,21 @@
               <FileType>1</FileType>
               <FilePath>.\Code\main.c</FilePath>
             </File>
+            <File>
+              <FileName>segment.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\segment.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds1302.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\ds1302.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
