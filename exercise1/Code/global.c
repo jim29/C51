@@ -5,7 +5,7 @@
 
 /* 			
 @param	ID 锁存器编号
-				val P0值16进制
+	val P0值16进制
 */
 void LatchControl(u8 ID, u8 val)
 {
