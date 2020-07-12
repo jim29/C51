@@ -1,9 +1,9 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    07/10/2020  14:40:32  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    07/10/2020  15:08:18  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
-D:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\main.obj TO .\Objects\exercise3 PRINT (.\Listings\exercise3
->> .m51) RAMSIZE (256)
+D:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\main.obj, .\Objects\system.obj TO .\Objects\exercise3 PRINT
+>>  (.\Listings\exercise3.m51) RAMSIZE (256)
 
 
 MEMORY MODEL: SMALL
@@ -12,6 +12,7 @@ MEMORY MODEL: SMALL
 INPUT MODULES INCLUDED:
   .\Objects\STARTUP.obj (?C_STARTUP)
   .\Objects\main.obj (MAIN)
+  .\Objects\system.obj (SYSTEM)
 
 
 LINK MAP OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
@@ -27,8 +28,10 @@ LINK MAP OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
                     0003H     07FDH                  *** GAP ***
-            CODE    0800H     000CH     UNIT         ?C_C51STARTUP
-            CODE    080CH     0002H     UNIT         ?PR?MAIN?MAIN
+            CODE    0800H     0014H     UNIT         ?PR?SYSINIT?SYSTEM
+            CODE    0814H     0010H     UNIT         ?PR?_LATCHCTRL?SYSTEM
+            CODE    0824H     000CH     UNIT         ?C_C51STARTUP
+            CODE    0830H     000CH     UNIT         ?PR?MAIN?MAIN
 
 
 
@@ -41,6 +44,13 @@ SEGMENT
 ?C_C51STARTUP
   +--> ?PR?MAIN?MAIN
 
+?PR?MAIN?MAIN
+  +--> ?PR?SYSINIT?SYSTEM
+  +--> ?PR?_LATCHCTRL?SYSTEM
+
+?PR?SYSINIT?SYSTEM
+  +--> ?PR?_LATCHCTRL?SYSTEM
+
 
 
 SYMBOL TABLE OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
@@ -49,7 +59,10 @@ SYMBOL TABLE OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
   ----------------------------------
 
   -------         MODULE        ?C_STARTUP
-  C:0800H         SEGMENT       ?C_C51STARTUP
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/10/2020  15:08:18  PAGE 2
+
+
+  C:0824H         SEGMENT       ?C_C51STARTUP
   I:0008H         SEGMENT       ?STACK
   C:0000H         PUBLIC        ?C_STARTUP
   D:00E0H         SYMBOL        ACC
@@ -59,10 +72,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
   N:0000H         SYMBOL        IBPSTACK
   N:0100H         SYMBOL        IBPSTACKTOP
   N:0080H         SYMBOL        IDATALEN
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/10/2020  14:40:32  PAGE 2
-
-
-  C:0803H         SYMBOL        IDATALOOP
+  C:0827H         SYMBOL        IDATALOOP
   N:0000H         SYMBOL        PBPSTACK
   N:0100H         SYMBOL        PBPSTACKTOP
   N:0000H         SYMBOL        PDATALEN
@@ -71,18 +81,18 @@ SYMBOL TABLE OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
   N:0000H         SYMBOL        PPAGEENABLE
   D:00A0H         SYMBOL        PPAGE_SFR
   D:0081H         SYMBOL        SP
-  C:0800H         SYMBOL        STARTUP1
+  C:0824H         SYMBOL        STARTUP1
   N:0000H         SYMBOL        XBPSTACK
   N:0000H         SYMBOL        XBPSTACKTOP
   N:0000H         SYMBOL        XDATALEN
   N:0000H         SYMBOL        XDATASTART
   C:0000H         LINE#         126
-  C:0800H         LINE#         133
-  C:0802H         LINE#         134
-  C:0803H         LINE#         135
-  C:0804H         LINE#         136
-  C:0806H         LINE#         185
-  C:0809H         LINE#         196
+  C:0824H         LINE#         133
+  C:0826H         LINE#         134
+  C:0827H         LINE#         135
+  C:0828H         LINE#         136
+  C:082AH         LINE#         185
+  C:082DH         LINE#         196
   -------         ENDMOD        ?C_STARTUP
 
   -------         MODULE        MAIN
@@ -98,22 +108,67 @@ SYMBOL TABLE OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
   D:00A8H         PUBLIC        IE
   D:00B8H         PUBLIC        IP
   D:00D8H         PUBLIC        CCON
-  C:080CH         PUBLIC        main
+  C:0830H         PUBLIC        main
   D:0098H         PUBLIC        SCON
   D:0088H         PUBLIC        TCON
   D:00D0H         PUBLIC        PSW
   -------         PROC          MAIN
-  C:080CH         LINE#         3
-  C:080CH         LINE#         4
-  C:080CH         LINE#         5
-  C:080CH         LINE#         6
-  C:080CH         LINE#         8
+  C:0830H         LINE#         5
+  C:0830H         LINE#         6
+  C:0830H         LINE#         7
+  C:0833H         LINE#         8
+  C:083AH         LINE#         9
+  C:083AH         LINE#         10
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/10/2020  15:08:18  PAGE 3
+
+
+  C:083AH         LINE#         12
   -------         ENDPROC       MAIN
   -------         ENDMOD        MAIN
 
+  -------         MODULE        SYSTEM
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00C0H         PUBLIC        P4
+  D:00C8H         PUBLIC        P5
+  D:00E8H         PUBLIC        P6
+  D:00F8H         PUBLIC        P7
+  C:0814H         PUBLIC        _LatchCtrl
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  D:00D8H         PUBLIC        CCON
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:0800H         PUBLIC        SysInit
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          _LATCHCTRL
+  D:0007H         SYMBOL        ID
+  D:0005H         SYMBOL        val
+  C:0814H         LINE#         11
+  C:0814H         LINE#         12
+  C:0814H         LINE#         13
+  C:0816H         LINE#         14
+  C:081DH         LINE#         15
+  C:081EH         LINE#         16
+  C:081FH         LINE#         17
+  C:0820H         LINE#         18
+  C:0823H         LINE#         19
+  -------         ENDPROC       _LATCHCTRL
+  -------         PROC          SYSINIT
+  C:0800H         LINE#         26
+  C:0800H         LINE#         27
+  C:0800H         LINE#         28
+  C:0807H         LINE#         29
+  C:080DH         LINE#         30
+  -------         ENDPROC       SYSINIT
+  -------         ENDMOD        SYSTEM
+
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0011H BYTE ( 0%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 003FH BYTE ( 3%) *
 ******************************************************************************
 
-Program Size: data=9.0 xdata=0 code=17
+Program Size: data=9.0 xdata=0 code=63
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

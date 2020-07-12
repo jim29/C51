@@ -374,6 +374,11 @@
               <FileType>1</FileType>
               <FilePath>.\Code\main.c</FilePath>
             </File>
+            <File>
+              <FileName>system.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Code\system.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

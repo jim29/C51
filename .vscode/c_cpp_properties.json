@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "D:/Keil_v5/C51/INC",
-                "${workspaceFolder}/DS1302/Code"
+                "${workspaceFolder}/exercise3/Code"
             ],
             "defines": [
                 "_DEBUG",

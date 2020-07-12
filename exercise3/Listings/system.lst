@@ -1,0 +1,55 @@
+C51 COMPILER V9.57.0.0   SYSTEM                                                            07/10/2020 15:08:18 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SYSTEM
+OBJECT MODULE PLACED IN .\Objects\system.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\system.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEND
+                    - PRINT(.\Listings\system.lst) TABS(2) OBJECT(.\Objects\system.obj)
+
+line level    source
+
+   1          #include <system.h>
+   2          #include <STC15F2K60S2.h>
+   3          #include <INTRINS.H>
+   4          
+   5          /*
+   6           *  锁存器控制，赋值锁存P0口
+   7           * @param
+   8           *  ID  控制元件的Y值
+   9           *  val P0口值
+  10           */ 
+  11          void LatchCtrl(unsigned char ID, unsigned char val)
+  12          {
+  13   1          P0 = val;
+  14   1          P2 |= ID << 5;
+  15   1          _nop_();
+  16   1          _nop_();
+  17   1          _nop_();
+  18   1          P2 &= 0x1F;
+  19   1      }
+  20          
+  21          
+  22          /*
+  23           *  系统初始化,关闭LED,关闭蜂鸣器,关闭继电器，关闭数码管
+  24           * 
+  25           */
+  26          void SysInit()
+  27          {
+  28   1          LatchCtrl(ULN_ID, 0x00);
+  29   1          LatchCtrl(LED_ID, 0xFF);
+  30   1          LatchCtrl(SEG_COM_ID, 0x00);
+  31   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     36    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
