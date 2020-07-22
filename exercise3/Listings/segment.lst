@@ -1,0 +1,56 @@
+C51 COMPILER V9.57.0.0   SEGMENT                                                           07/21/2020 23:47:24 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SEGMENT
+OBJECT MODULE PLACED IN .\Objects\segment.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\segment.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\segment.lst) TABS(2) OBJECT(.\Objects\segment.obj)
+
+line level    source
+
+   1          #include <segment.h>
+   2          
+   3          
+   4          //数码管码表 0~9
+   5          code unsigned char segment_table[] = {
+   6              0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90
+   7          };
+   8          
+   9          
+  10          /*
+  11           *  数码管显示单个字符
+  12           * @param
+  13           *  index   显示位置 0~7
+  14           *  val     显示数值 0~9
+  15           */
+  16          void SegmentDisp(unsigned char index, unsigned char val)
+  17          {
+  18   1          LatchCtrl(SEG_COM_ID, 1 << index);
+  19   1          LatchCtrl(SEG_SEC_ID, segment_table[val]);
+  20   1      }
+  21          
+  22          
+  23          /*
+  24           *  数码管刷新显示
+  25           */
+  26          void SegmentFresh(unsigned char index[], unsigned char content[])
+  27          {
+  28   1          static unsigned char i = 0; //静态存储显示位置
+  29   1          if(i >= SEG_INDEX_MAX)  i = 0;
+  30   1          SegmentDisp(index[i], content[i]);
+  31   1          i ++;    
+  32   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     73    ----
+   CONSTANT SIZE    =     10    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

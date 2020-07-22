@@ -1,23 +1,31 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    07/12/2020  17:16:53  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    07/22/2020  10:00:15  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
-D:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\main.obj, .\Objects\system.obj, .\Objects\timer.obj TO .\Ob
->> jects\exercise3 PRINT (.\Listings\exercise3.m51) RAMSIZE (256)
+D:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\main.obj, .\Objects\system.obj, .\Objects\segment.obj, .\Ob
+>> jects\sonic.obj TO .\Objects\exercise3 PRINT (.\Listings\exercise3.m51) RAMSIZE (256)
 
 
-MEMORY MODEL: SMALL
+MEMORY MODEL: SMALL WITH FLOATING POINT ARITHMETIC
 
 
 INPUT MODULES INCLUDED:
   .\Objects\STARTUP.obj (?C_STARTUP)
   .\Objects\main.obj (MAIN)
   .\Objects\system.obj (SYSTEM)
-  .\Objects\timer.obj (TIMER)
+  .\Objects\segment.obj (SEGMENT)
+  .\Objects\sonic.obj (SONIC)
+  D:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPMUL)
+  D:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FCAST)
+  D:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?CASTF)
+  D:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPGETOPN)
   D:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
-  D:\KEIL_V5\C51\LIB\C51S.LIB (?C?SIDIV)
-  D:\KEIL_V5\C51\LIB\C51S.LIB (?C?SLCMP)
+  D:\KEIL_V5\C51\LIB\C51S.LIB (?C?CLDOPTR)
+  D:\KEIL_V5\C51\LIB\C51S.LIB (?C?CSTOPTR)
   D:\KEIL_V5\C51\LIB\C51S.LIB (?C?UIDIV)
+  D:\KEIL_V5\C51\LIB\C51S.LIB (?C?SIDIV)
+  D:\KEIL_V5\C51\LIB\C51S.LIB (?C?LNEG)
+  D:\KEIL_V5\C51\LIB\C51S.LIB (?C?SLCMP)
 
 
 LINK MAP OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
@@ -28,45 +36,80 @@ LINK MAP OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
 
             * * * * * * *   D A T A   M E M O R Y   * * * * * * *
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
-            DATA    0008H     0005H     UNIT         ?DT?MAIN
-            IDATA   000DH     0001H     UNIT         ?STACK
+            DATA    0008H     000DH     UNIT         _DATA_GROUP_
+            DATA    0015H     0008H     UNIT         ?DT?MAIN
+            DATA    001DH     0002H     UNIT         ?DT?SYSTEM
+            DATA    001FH     0001H     UNIT         ?DT?SEGMENT
+            IDATA   0020H     0001H     UNIT         ?STACK
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
                     0003H     0008H                  *** GAP ***
             CODE    000BH     0003H     ABSOLUTE     
                     000EH     07F2H                  *** GAP ***
-            CODE    0800H     00A1H     UNIT         ?C?LIB_CODE
-            CODE    08A1H     008CH     UNIT         ?C_C51STARTUP
-            CODE    092DH     005EH     UNIT         ?PR?MAIN?MAIN
-            CODE    098BH     0015H     UNIT         ?PR?TIMER0INIT?TIMER
-            CODE    09A0H     0014H     UNIT         ?PR?SYSINIT?SYSTEM
-            CODE    09B4H     0010H     UNIT         ?PR?_LATCHCTRL?SYSTEM
-            CODE    09C4H     000DH     UNIT         ?PR?TIMER0?MAIN
-            CODE    09D1H     0004H     UNIT         ?C_INITSEG
+            CODE    0800H     02C3H     UNIT         ?C?LIB_CODE
+            CODE    0AC3H     008CH     UNIT         ?C_C51STARTUP
+            CODE    0B4FH     005FH     UNIT         ?PR?TIMER_0_ROUTINE?MAIN
+            CODE    0BAEH     005AH     UNIT         ?PR?_CONTENTUPDATE?MAIN
+            CODE    0C08H     0057H     UNIT         ?PR?MAIN?MAIN
+            CODE    0C5FH     003EH     UNIT         ?PR?SONICMEASURE?SONIC
+            CODE    0C9DH     002AH     UNIT         ?PR?_SEGMENTFRESH?SEGMENT
+            CODE    0CC7H     001FH     UNIT         ?PR?_SEGMENTDISP?SEGMENT
+            CODE    0CE6H     0017H     UNIT         ?PR?SYSINIT?SYSTEM
+            CODE    0CFDH     0015H     UNIT         ?PR?TIMER_0_INIT?SYSTEM
+            CODE    0D12H     0011H     UNIT         ?PR?SONICSEND?SONIC
+            CODE    0D23H     0010H     UNIT         ?PR?_LATCHCTRL?SYSTEM
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/22/2020  10:00:15  PAGE 2
+
+
+            CODE    0D33H     0010H     UNIT         ?PR?SONICINIT?SONIC
+            CODE    0D43H     000EH     UNIT         ?C_INITSEG
+            CODE    0D51H     000AH     UNIT         ?CO?SEGMENT
+            CODE    0D5BH     0007H     UNIT         ?PR?DELAY12US?SONIC
+            CODE    0D62H     0004H     UNIT         ?CO?MAIN
 
 
 
 OVERLAY MAP OF MODULE:   .\Objects\exercise3 (?C_STARTUP)
 
 
-SEGMENT
-  +--> CALLED SEGMENT
----------------------
-?C_C51STARTUP
+SEGMENT                             DATA_GROUP 
+  +--> CALLED SEGMENT             START    LENGTH
+-------------------------------------------------
+?C_C51STARTUP                     -----    -----
   +--> ?PR?MAIN?MAIN
   +--> ?C_INITSEG
 
-?PR?MAIN?MAIN
+?PR?MAIN?MAIN                     -----    -----
   +--> ?PR?SYSINIT?SYSTEM
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/12/2020  17:16:53  PAGE 2
+  +--> ?PR?SONICMEASURE?SONIC
+  +--> ?PR?_CONTENTUPDATE?MAIN
 
-
-  +--> ?PR?TIMER0INIT?TIMER
+?PR?SYSINIT?SYSTEM                -----    -----
   +--> ?PR?_LATCHCTRL?SYSTEM
+  +--> ?PR?TIMER_0_INIT?SYSTEM
 
-?PR?SYSINIT?SYSTEM
+?PR?SONICMEASURE?SONIC            -----    -----
+  +--> ?PR?SONICINIT?SONIC
+  +--> ?PR?SONICSEND?SONIC
+
+?PR?SONICSEND?SONIC               -----    -----
+  +--> ?PR?DELAY12US?SONIC
+
+?PR?_CONTENTUPDATE?MAIN           0008H    0006H
+
+*** NEW ROOT ***************************************************
+
+?PR?TIMER_0_ROUTINE?MAIN          -----    -----
+  +--> ?CO?MAIN
+  +--> ?PR?_SEGMENTFRESH?SEGMENT
+
+?PR?_SEGMENTFRESH?SEGMENT         000EH    0006H
+  +--> ?PR?_SEGMENTDISP?SEGMENT
+
+?PR?_SEGMENTDISP?SEGMENT          0014H    0001H
   +--> ?PR?_LATCHCTRL?SYSTEM
+  +--> ?CO?SEGMENT
 
 
 
@@ -76,8 +119,11 @@ SYMBOL TABLE OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
   ----------------------------------
 
   -------         MODULE        ?C_STARTUP
-  C:08A1H         SEGMENT       ?C_C51STARTUP
-  I:000DH         SEGMENT       ?STACK
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/22/2020  10:00:15  PAGE 3
+
+
+  C:0AC3H         SEGMENT       ?C_C51STARTUP
+  I:0020H         SEGMENT       ?STACK
   C:0000H         PUBLIC        ?C_STARTUP
   D:00E0H         SYMBOL        ACC
   D:00F0H         SYMBOL        B
@@ -86,7 +132,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
   N:0000H         SYMBOL        IBPSTACK
   N:0100H         SYMBOL        IBPSTACKTOP
   N:0080H         SYMBOL        IDATALEN
-  C:08A4H         SYMBOL        IDATALOOP
+  C:0AC6H         SYMBOL        IDATALOOP
   N:0000H         SYMBOL        PBPSTACK
   N:0100H         SYMBOL        PBPSTACKTOP
   N:0000H         SYMBOL        PDATALEN
@@ -95,18 +141,18 @@ SYMBOL TABLE OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
   N:0000H         SYMBOL        PPAGEENABLE
   D:00A0H         SYMBOL        PPAGE_SFR
   D:0081H         SYMBOL        SP
-  C:08A1H         SYMBOL        STARTUP1
+  C:0AC3H         SYMBOL        STARTUP1
   N:0000H         SYMBOL        XBPSTACK
   N:0000H         SYMBOL        XBPSTACKTOP
   N:0000H         SYMBOL        XDATALEN
   N:0000H         SYMBOL        XDATASTART
   C:0000H         LINE#         126
-  C:08A1H         LINE#         133
-  C:08A3H         LINE#         134
-  C:08A4H         LINE#         135
-  C:08A5H         LINE#         136
-  C:08A7H         LINE#         185
-  C:08AAH         LINE#         196
+  C:0AC3H         LINE#         133
+  C:0AC5H         LINE#         134
+  C:0AC6H         LINE#         135
+  C:0AC7H         LINE#         136
+  C:0AC9H         LINE#         185
+  C:0ACCH         LINE#         196
   -------         ENDMOD        ?C_STARTUP
 
   -------         MODULE        MAIN
@@ -119,43 +165,62 @@ SYMBOL TABLE OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
   D:00C8H         PUBLIC        P5
   D:00E8H         PUBLIC        P6
   D:00F8H         PUBLIC        P7
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/12/2020  17:16:53  PAGE 3
-
-
   D:00A8H         PUBLIC        IE
   D:00B8H         PUBLIC        IP
   D:00D8H         PUBLIC        CCON
-  C:092DH         PUBLIC        main
-  D:0008H         PUBLIC        SYSTICK
-  C:09C4H         PUBLIC        Timer0
+  C:0C08H         PUBLIC        main
   D:0098H         PUBLIC        SCON
   D:0088H         PUBLIC        TCON
-  D:000AH         PUBLIC        SYSTICK_tmp
-  D:000CH         PUBLIC        LED_val
+  C:0D62H         PUBLIC        SEG_INDEX
+  C:0BAEH         PUBLIC        _ContentUpdate
+  D:0015H         PUBLIC        DISTANCE
+  D:0017H         PUBLIC        SEG_CONTENT
+  C:0B4FH         PUBLIC        Timer_0_Routine
+  D:001BH         PUBLIC        SYSTICK_tmp
   D:00D0H         PUBLIC        PSW
   -------         PROC          MAIN
-  C:092DH         LINE#         9
-  C:092DH         LINE#         10
-  C:092DH         LINE#         11
-  C:0930H         LINE#         12
-  C:0933H         LINE#         13
-  C:0938H         LINE#         14
-  C:0938H         LINE#         15
-  C:093FH         LINE#         16
-  C:0945H         LINE#         17
-  C:0951H         LINE#         18
-  C:0960H         LINE#         19
-  C:096DH         LINE#         20
-  C:096DH         LINE#         21
-  C:0984H         LINE#         22
-  C:0989H         LINE#         23
-  C:0989H         LINE#         24
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/22/2020  10:00:15  PAGE 4
+
+
+  C:0C08H         LINE#         15
+  C:0C08H         LINE#         16
+  C:0C08H         LINE#         17
+  C:0C0BH         LINE#         18
+  C:0C10H         LINE#         19
+  C:0C10H         LINE#         20
+  C:0C16H         LINE#         21
+  C:0C22H         LINE#         22
+  C:0C31H         LINE#         23
+  C:0C38H         LINE#         24
+  C:0C41H         LINE#         25
+  C:0C41H         LINE#         26
+  C:0C58H         LINE#         27
+  C:0C5DH         LINE#         28
+  C:0C5DH         LINE#         30
   -------         ENDPROC       MAIN
-  -------         PROC          TIMER0
-  C:09C4H         LINE#         28
-  C:09C6H         LINE#         30
-  C:09CEH         LINE#         31
-  -------         ENDPROC       TIMER0
+  -------         PROC          TIMER_0_ROUTINE
+  C:0B4FH         LINE#         35
+  C:0B6CH         LINE#         37
+  C:0B74H         LINE#         38
+  C:0B82H         LINE#         39
+  C:0B93H         LINE#         40
+  C:0B93H         LINE#         41
+  -------         ENDPROC       TIMER_0_ROUTINE
+  -------         PROC          _CONTENTUPDATE
+  D:0008H         SYMBOL        dst
+  D:000AH         SYMBOL        content
+  -------         DO            
+  D:000DH         SYMBOL        i
+  -------         ENDDO         
+  C:0BAEH         LINE#         47
+  C:0BB8H         LINE#         48
+  C:0BB8H         LINE#         50
+  C:0BC9H         LINE#         51
+  C:0BCCH         LINE#         52
+  C:0BEDH         LINE#         53
+  C:0BFCH         LINE#         54
+  C:0C07H         LINE#         55
+  -------         ENDPROC       _CONTENTUPDATE
   -------         ENDMOD        MAIN
 
   -------         MODULE        SYSTEM
@@ -166,42 +231,66 @@ SYMBOL TABLE OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
   D:00B0H         PUBLIC        P3
   D:00C0H         PUBLIC        P4
   D:00C8H         PUBLIC        P5
+  B:00A8H.7       PUBLIC        EA
   D:00E8H         PUBLIC        P6
+  C:0D23H         PUBLIC        _LatchCtrl
   D:00F8H         PUBLIC        P7
-  C:09B4H         PUBLIC        _LatchCtrl
+  C:0CFDH         PUBLIC        Timer_0_Init
   D:00A8H         PUBLIC        IE
   D:00B8H         PUBLIC        IP
   D:00D8H         PUBLIC        CCON
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/22/2020  10:00:15  PAGE 5
+
+
+  D:001DH         PUBLIC        SYSTICK
   D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
   D:0088H         PUBLIC        TCON
-  C:09A0H         PUBLIC        SysInit
+  D:008EH         PUBLIC        AUXR
+  B:00A8H.1       PUBLIC        ET0
+  B:0088H.5       PUBLIC        TF0
+  D:008CH         PUBLIC        TH0
+  D:008AH         PUBLIC        TL0
+  B:0088H.4       PUBLIC        TR0
+  C:0CE6H         PUBLIC        SysInit
   D:00D0H         PUBLIC        PSW
   -------         PROC          _LATCHCTRL
   D:0007H         SYMBOL        ID
   D:0005H         SYMBOL        val
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/12/2020  17:16:53  PAGE 4
-
-
-  C:09B4H         LINE#         11
-  C:09B4H         LINE#         12
-  C:09B4H         LINE#         13
-  C:09B6H         LINE#         14
-  C:09BDH         LINE#         15
-  C:09BEH         LINE#         16
-  C:09BFH         LINE#         17
-  C:09C0H         LINE#         18
-  C:09C3H         LINE#         19
+  C:0D23H         LINE#         11
+  C:0D23H         LINE#         12
+  C:0D23H         LINE#         13
+  C:0D25H         LINE#         14
+  C:0D2CH         LINE#         15
+  C:0D2DH         LINE#         16
+  C:0D2EH         LINE#         17
+  C:0D2FH         LINE#         18
+  C:0D32H         LINE#         19
   -------         ENDPROC       _LATCHCTRL
+  -------         PROC          TIMER_0_INIT
+  C:0CFDH         LINE#         25
+  C:0CFDH         LINE#         26
+  C:0CFDH         LINE#         27
+  C:0D00H         LINE#         28
+  C:0D03H         LINE#         29
+  C:0D06H         LINE#         30
+  C:0D09H         LINE#         31
+  C:0D0BH         LINE#         32
+  C:0D0DH         LINE#         33
+  C:0D0FH         LINE#         34
+  C:0D11H         LINE#         35
+  -------         ENDPROC       TIMER_0_INIT
   -------         PROC          SYSINIT
-  C:09A0H         LINE#         26
-  C:09A0H         LINE#         27
-  C:09A0H         LINE#         28
-  C:09A7H         LINE#         29
-  C:09ADH         LINE#         30
+  C:0CE6H         LINE#         41
+  C:0CE6H         LINE#         42
+  C:0CE6H         LINE#         43
+  C:0CEDH         LINE#         44
+  C:0CF3H         LINE#         45
+  C:0CFAH         LINE#         46
   -------         ENDPROC       SYSINIT
   -------         ENDMOD        SYSTEM
 
-  -------         MODULE        TIMER
+  -------         MODULE        SEGMENT
   C:0000H         SYMBOL        _ICE_DUMMY_
   D:0080H         PUBLIC        P0
   D:0090H         PUBLIC        P1
@@ -209,56 +298,179 @@ SYMBOL TABLE OF MODULE:  .\Objects\exercise3 (?C_STARTUP)
   D:00B0H         PUBLIC        P3
   D:00C0H         PUBLIC        P4
   D:00C8H         PUBLIC        P5
-  B:00A8H.7       PUBLIC        EA
   D:00E8H         PUBLIC        P6
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/22/2020  10:00:15  PAGE 6
+
+
   D:00F8H         PUBLIC        P7
   D:00A8H         PUBLIC        IE
   D:00B8H         PUBLIC        IP
   D:00D8H         PUBLIC        CCON
   D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:0C9DH         PUBLIC        _SegmentFresh
+  C:0D51H         PUBLIC        segment_table
+  C:0CC7H         PUBLIC        _SegmentDisp
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          _SEGMENTDISP
+  D:0007H         SYMBOL        index
+  D:0014H         SYMBOL        val
+  C:0CC7H         LINE#         16
+  C:0CC9H         LINE#         17
+  C:0CC9H         LINE#         18
+  C:0CDAH         LINE#         19
+  -------         ENDPROC       _SEGMENTDISP
+  -------         PROC          _SEGMENTFRESH
+  D:0001H         SYMBOL        index
+  D:0011H         SYMBOL        content
+  -------         DO            
+  D:001FH         SYMBOL        i
+  -------         ENDDO         
+  C:0C9DH         LINE#         26
+  C:0C9DH         LINE#         27
+  C:0C9DH         LINE#         29
+  C:0CA7H         LINE#         30
+  C:0CC4H         LINE#         31
+  C:0CC6H         LINE#         32
+  -------         ENDPROC       _SEGMENTFRESH
+  -------         ENDMOD        SEGMENT
+
+  -------         MODULE        SONIC
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00C0H         PUBLIC        P4
+  D:00C8H         PUBLIC        P5
+  D:00E8H         PUBLIC        P6
+  D:00F8H         PUBLIC        P7
+  C:0D12H         PUBLIC        SonicSend
+  D:00A8H         PUBLIC        IE
+  C:0D33H         PUBLIC        SonicInit
+  D:00B8H         PUBLIC        IP
+  D:00D8H         PUBLIC        CCON
+  B:0090H.0       PUBLIC        P10
+  B:0090H.1       PUBLIC        P11
+  D:0098H         PUBLIC        SCON
   D:0089H         PUBLIC        TMOD
   D:0088H         PUBLIC        TCON
+  C:0D5BH         PUBLIC        Delay12us
   D:008EH         PUBLIC        AUXR
-  B:00A8H.1       PUBLIC        ET0
-  B:0088H.5       PUBLIC        TF0
-  C:098BH         PUBLIC        Timer0Init
-  D:008CH         PUBLIC        TH0
-  D:008AH         PUBLIC        TL0
-  B:0088H.4       PUBLIC        TR0
+  B:0088H.7       PUBLIC        TF1
+  D:008DH         PUBLIC        TH1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/22/2020  10:00:15  PAGE 7
+
+
+  D:008BH         PUBLIC        TL1
+  C:0C5FH         PUBLIC        SonicMeasure
+  B:0088H.6       PUBLIC        TR1
   D:00D0H         PUBLIC        PSW
-  -------         PROC          TIMER0INIT
-  C:098BH         LINE#         4
-  C:098BH         LINE#         5
-  C:098BH         LINE#         6
-  C:098EH         LINE#         7
-  C:0991H         LINE#         8
-  C:0994H         LINE#         9
-  C:0997H         LINE#         10
-  C:0999H         LINE#         11
-  C:099BH         LINE#         12
-  C:099DH         LINE#         13
-  C:099FH         LINE#         14
-  -------         ENDPROC       TIMER0INIT
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/12/2020  17:16:53  PAGE 5
+  -------         PROC          DELAY12US
+  -------         DO            
+  D:0007H         SYMBOL        i
+  -------         ENDDO         
+  C:0D5BH         LINE#         6
+  C:0D5BH         LINE#         7
+  C:0D5BH         LINE#         10
+  C:0D5CH         LINE#         11
+  C:0D5DH         LINE#         12
+  C:0D5FH         LINE#         13
+  C:0D61H         LINE#         14
+  -------         ENDPROC       DELAY12US
+  -------         PROC          SONICINIT
+  C:0D33H         LINE#         20
+  C:0D33H         LINE#         21
+  C:0D33H         LINE#         22
+  C:0D36H         LINE#         23
+  C:0D39H         LINE#         24
+  C:0D3CH         LINE#         25
+  C:0D3EH         LINE#         26
+  C:0D40H         LINE#         27
+  C:0D42H         LINE#         28
+  -------         ENDPROC       SONICINIT
+  -------         PROC          SONICSEND
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:0D12H         LINE#         34
+  C:0D12H         LINE#         35
+  C:0D12H         LINE#         37
+  C:0D14H         LINE#         38
+  C:0D16H         LINE#         39
+  C:0D19H         LINE#         40
+  C:0D1BH         LINE#         41
+  C:0D1EH         LINE#         42
+  C:0D22H         LINE#         43
+  -------         ENDPROC       SONICSEND
+  -------         PROC          SONICMEASURE
+  -------         DO            
+  D:0004H         SYMBOL        ans
+  D:0006H         SYMBOL        time
+  -------         ENDDO         
+  C:0C5FH         LINE#         49
+  C:0C5FH         LINE#         50
+  C:0C5FH         LINE#         54
+  C:0C62H         LINE#         55
+  C:0C65H         LINE#         56
+  C:0C67H         LINE#         57
+  C:0C6DH         LINE#         58
+  C:0C6FH         LINE#         59
+  C:0C78H         LINE#         60
+  C:0C78H         LINE#         61
+  C:0C7AH         LINE#         62
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  07/22/2020  10:00:15  PAGE 8
 
 
-  -------         ENDMOD        TIMER
+  C:0C7CH         LINE#         63
+  C:0C81H         LINE#         64
+  C:0C98H         LINE#         65
+  C:0C98H         LINE#         67
+  C:0C9CH         LINE#         68
+  -------         ENDPROC       SONICMEASURE
+  -------         ENDMOD        SONIC
 
-  -------         MODULE        ?C?SIDIV
-  C:0800H         PUBLIC        ?C?SIDIV
-  -------         ENDMOD        ?C?SIDIV
+  -------         MODULE        ?C?FPMUL
+  C:0800H         PUBLIC        ?C?FPMUL
+  -------         ENDMOD        ?C?FPMUL
 
-  -------         MODULE        ?C?SLCMP
-  C:0836H         PUBLIC        ?C?SLCMP
-  -------         ENDMOD        ?C?SLCMP
+  -------         MODULE        ?C?FCAST
+  C:0910H         PUBLIC        ?C?FCASTC
+  C:090BH         PUBLIC        ?C?FCASTI
+  C:0906H         PUBLIC        ?C?FCASTL
+  -------         ENDMOD        ?C?FCAST
+
+  -------         MODULE        ?C?CASTF
+  C:0944H         PUBLIC        ?C?CASTF
+  -------         ENDMOD        ?C?CASTF
+
+  -------         MODULE        ?C?CLDOPTR
+  C:09C5H         PUBLIC        ?C?CLDOPTR
+  -------         ENDMOD        ?C?CLDOPTR
+
+  -------         MODULE        ?C?CSTOPTR
+  C:09F2H         PUBLIC        ?C?CSTOPTR
+  -------         ENDMOD        ?C?CSTOPTR
 
   -------         MODULE        ?C?UIDIV
-  C:084CH         PUBLIC        ?C?UIDIV
+  C:0A14H         PUBLIC        ?C?UIDIV
   -------         ENDMOD        ?C?UIDIV
 
+  -------         MODULE        ?C?SIDIV
+  C:0A69H         PUBLIC        ?C?SIDIV
+  -------         ENDMOD        ?C?SIDIV
+
+  -------         MODULE        ?C?LNEG
+  C:0A9FH         PUBLIC        ?C?LNEG
+  -------         ENDMOD        ?C?LNEG
+
+  -------         MODULE        ?C?SLCMP
+  C:0AADH         PUBLIC        ?C?SLCMP
+  -------         ENDMOD        ?C?SLCMP
+
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 00B9H BYTE ( 9%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0228H BYTE (26%) *
 ******************************************************************************
 
-Program Size: data=14.0 xdata=0 code=475
+Program Size: data=33.0 xdata=0 code=1388
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

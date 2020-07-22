@@ -1,6 +1,7 @@
 ".\Objects\STARTUP.obj",
 ".\Objects\main.obj",
 ".\Objects\system.obj",
-".\Objects\timer.obj" 
+".\Objects\segment.obj",
+".\Objects\sonic.obj" 
 TO ".\Objects\exercise3" 
 PRINT(".\Listings\exercise3.m51") RAMSIZE(256) 

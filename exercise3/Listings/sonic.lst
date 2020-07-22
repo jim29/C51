@@ -1,0 +1,105 @@
+C51 COMPILER V9.57.0.0   SONIC                                                             07/22/2020 09:56:13 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SONIC
+OBJECT MODULE PLACED IN .\Objects\sonic.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\sonic.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEND 
+                    -PRINT(.\Listings\sonic.lst) TABS(2) OBJECT(.\Objects\sonic.obj)
+
+line level    source
+
+   1          #include <sonic.h>
+   2          #include <intrins.h>
+   3          
+   4          
+   5          //软件延时12us
+   6          void Delay12us()    //@12.000MHz
+   7          {
+   8   1        unsigned char i;
+   9   1      
+  10   1        _nop_();
+  11   1        _nop_();
+  12   1        i = 33;
+  13   1        while (--i);
+  14   1      }
+  15          
+  16          
+  17          /*
+  18           *  超声波测距初始化(T1计数器,不开中断)
+  19           */
+  20          void SonicInit()
+  21          {
+  22   1          AUXR |= 0xBF;   //定时器时钟12T模式
+  23   1          TMOD &= 0x0F;   //设置定时器1模式,16位自动重载
+  24   1          TL1 = 0;            //T1清零
+  25   1          TH1 = 0;
+  26   1          TF1 = 0;            //清除TF1标志      
+  27   1          P11 = 1;            //初始化
+  28   1      }
+  29          
+  30          
+  31          /*
+  32           *  发送40khz方波(频率稍大)8次
+  33           */
+  34          void SonicSend()
+  35          {
+  36   1          unsigned char i;
+  37   1          for(i = 0; i < 8; i++){
+  38   2              P_PWM = 1;
+  39   2              Delay12us();
+  40   2              P_PWM = 0;
+  41   2              Delay12us();
+  42   2          }
+  43   1      }
+  44          
+  45          
+  46          /*
+  47           *  超声波接收计数，计算距离，单位mm
+  48           */
+  49          unsigned int SonicMeasure()
+  50          {
+  51   1          unsigned int ans;    //测距结果
+  52   1          unsigned int time;   //计时结果
+  53   1          //EA = 0;              //关中断
+  54   1          SonicInit();
+C51 COMPILER V9.57.0.0   SONIC                                                             07/22/2020 09:56:13 PAGE 2   
+
+  55   1          SonicSend();        
+  56   1          TR1 = 1;            //开始计时 
+  57   1          while(P11 == 1 && TF1 == 0) {;} //等待触发/溢出
+  58   1          TR1 = 0;            //停止计时
+  59   1          if(TF1 == 1)    ans = 9999;    //溢出鲁棒
+  60   1          else{
+  61   2              time = TH1;
+  62   2              time = time << 8;
+  63   2              time |= TL1;
+  64   2              ans = time * 0.17;
+  65   2          }
+  66   1          //EA = 1;             //开中断
+  67   1          return ans;
+  68   1      }
+  69          
+  70          
+  71          
+  72          
+  73          
+  74          
+  75          
+  76          
+  77          
+  78          
+  79          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    102    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

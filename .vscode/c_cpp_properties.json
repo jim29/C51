@@ -10,7 +10,8 @@
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE"
+                "_UNICODE",
+                "code=const"
             ],
             "cStandard": "c11",
             "intelliSenseMode": "msvc-x64"
