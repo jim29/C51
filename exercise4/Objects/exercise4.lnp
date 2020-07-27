@@ -1,0 +1,10 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\system.obj",
+".\Objects\ds1302.obj",
+".\Objects\segment.obj",
+".\Objects\timer.obj",
+".\Objects\keyboard.obj",
+".\Objects\ds18b20.obj" 
+TO ".\Objects\exercise4" 
+PRINT(".\Listings\exercise4.m51") RAMSIZE(256) 

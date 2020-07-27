@@ -1,0 +1,297 @@
+C51 COMPILER V9.57.0.0   MAIN                                                              07/27/2020 10:07:35 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEND P
+                    -RINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          /*
+   2           *  第八届初赛题 电子钟
+   3           */
+   4          #include <system.h>
+   5          #include <segment.h>
+   6          #include <ds1302.h>
+   7          #include <keyboard.h>
+   8          #include <intrins.h>
+   9          
+  10          unsigned int SYSTICK;   //系统时间
+  11          unsigned int SYSTICK_tmp;
+  12          unsigned char SEG_CONTENT[] = {2, 3, 10, 5, 9, 10, 5, 0};   //初始值 23-59-50
+  13          unsigned char HOUR_RUN = 23;    //实时时钟数值
+  14          unsigned char MIN_RUN = 59;
+  15          unsigned char SEC_RUN = 50;
+  16          unsigned char HOUR_ALARM = 0;   //闹钟数值
+  17          unsigned char MIN_ALARM = 0;
+  18          unsigned char SEC_ALARM = 0;
+  19          unsigned char KEY_PRESSED = NONE_PRESSED;   //键盘扫描返回的按键值
+  20          unsigned char SYS_STATE;    //系统状态
+  21          unsigned char SETTING_MODE; //设定状态
+  22          bit BLINK = 0;    //闪烁状态 
+  23          unsigned char T;            //测量温度
+  24          unsigned char ALARM_COUNT = 0;  //闹钟次数
+  25          bit LED_FLAG = 1;         //LED闪烁FLAG
+  26          unsigned char ALARM_BREAK = 0;
+  27          
+  28          void DS1302_WriteTime();
+  29          void DS1302_ReadTime();
+  30          void SegUpdate();
+  31          void NextState();
+  32          void SetBlink();
+  33          void Add_or_Sub(unsigned char mode);
+  34          
+  35          /***********************
+  36           ***********************/
+  37          void main()
+  38          {
+  39   1          SysInit();
+  40   1          SYSTICK = 0;
+  41   1          DS1302_WriteTime();
+  42   1          while(1){
+  43   2              SYSTICK_tmp = SYSTICK;
+  44   2              while(SYSTICK == SYSTICK_tmp) ;
+  45   2              if(SYSTICK > 50000) SYSTICK = 0;    //系统时钟溢出设定 5s
+  46   2              if(SYSTICK % 1100 == 0){     //110ms更新实时时钟
+  47   3                  SegUpdate(); 
+  48   3                  SetBlink();  
+  49   3                  if(HOUR_RUN == HOUR_ALARM && MIN_RUN == MIN_ALARM && SEC_RUN == SEC_ALARM && SYS_STATE != ALAR
+             -M_RISING){ //80ms判断闹钟
+  50   4                      SYS_STATE = ALARM_RISING;
+  51   4                      ALARM_COUNT = 0;   
+  52   4                  }
+  53   3              }
+C51 COMPILER V9.57.0.0   MAIN                                                              07/27/2020 10:07:35 PAGE 2   
+
+  54   2              if(SYSTICK % 600 == 0){     //60ms扫描键盘
+  55   3                  KEY_PRESSED = KeyScan();
+  56   3                  switch(KEY_PRESSED)
+  57   3                  {
+  58   4                  case NONE_PRESSED:
+  59   4                      break;
+  60   4                  case S7_PRESSED:    //按下S7实时设置
+  61   4                      if(SYS_STATE == IDLE)   SETTING_MODE = RUNTIME_SETTING;
+  62   4                      if(SETTING_MODE == RUNTIME_SETTING){
+  63   5                          NextState();
+  64   5                      }
+  65   4                      if(SYS_STATE == ALARM_RISING){
+  66   5                          SYS_STATE = IDLE; //中断闹钟
+  67   5                          LatchCtrl(LED_ID, 0xFF);
+  68   5                      } 
+  69   4                      break;
+  70   4                  case S6_PRESSED:    //按下S6闹钟设置
+  71   4                      if(SYS_STATE == IDLE)   SETTING_MODE = ALARM_SETTING;
+  72   4                      if(SETTING_MODE == ALARM_SETTING){
+  73   5                          NextState();
+  74   5                      }
+  75   4                      if(SYS_STATE == ALARM_RISING){
+  76   5                          SYS_STATE = IDLE; //中断闹钟
+  77   5                          LatchCtrl(LED_ID, 0xFF);
+  78   5                      } 
+  79   4                      break;
+  80   4                  case S5_PRESSED:    //按下S5加时
+  81   4                      Add_or_Sub(TIME_ADD);
+  82   4                      if(SYS_STATE == ALARM_RISING){
+  83   5                          SYS_STATE = IDLE; //中断闹钟
+  84   5                          LatchCtrl(LED_ID, 0xFF);
+  85   5                      } 
+  86   4                      break;
+  87   4                  case S4_PRESSED:    //按下S4减时
+  88   4                      Add_or_Sub(TIME_SUB);
+  89   4                      if(SYS_STATE == ALARM_RISING){
+  90   5                          SYS_STATE = IDLE; //中断闹钟
+  91   5                          LatchCtrl(LED_ID, 0xFF);
+  92   5                      } 
+  93   4                      break;
+  94   4                  default:
+  95   4                      break;
+  96   4                  }     
+  97   3              }
+  98   2          }
+  99   1      }
+ 100          
+ 101          
+ 102          // 100us系统中断
+ 103          void Timer0Routine() interrupt 1 
+ 104          {
+ 105   1          SYSTICK ++;
+ 106   1          if(SYSTICK % 20 == 0){  //2ms刷新数码管
+ 107   2              SegFresh(SEG_CONTENT);
+ 108   2          }
+ 109   1          if(SYSTICK % 10000){    //1s闪烁判断
+ 110   2                 BLINK = ~BLINK;
+ 111   2          }
+ 112   1          if(SYS_STATE == ALARM_RISING && SYSTICK % 2000 == 0){   //0.2sLED闹钟
+ 113   2              LatchCtrl(LED_ID, 0xFE + (unsigned char)LED_FLAG);
+ 114   2              LED_FLAG = ~ LED_FLAG;
+ 115   2              ALARM_COUNT ++;
+C51 COMPILER V9.57.0.0   MAIN                                                              07/27/2020 10:07:35 PAGE 3   
+
+ 116   2              if(ALARM_COUNT >=25){           //5s
+ 117   3                  LatchCtrl(LED_ID, 0xFF);
+ 118   3                  SYS_STATE = IDLE;
+ 119   3                  ALARM_COUNT = 0;
+ 120   3              }
+ 121   2          }
+ 122   1          
+ 123   1      }
+ 124          
+ 125          
+ 126          /*
+ 127           *  DS1302时钟写入
+ 128           * @param
+ 129           * hour min sec 写入的小时,分钟,秒
+ 130           */
+ 131          void DS1302_WriteTime()
+ 132          {
+ 133   1          Write_Ds1302(SEC_WRITE_ADDR,  ((SEC_RUN / 10) << 4) + (SEC_RUN % 10));  //写入秒
+ 134   1          Write_Ds1302(MIN_WRITE_ADDR,  ((MIN_RUN / 10) << 4) + (MIN_RUN % 10));  //写入分
+ 135   1          Write_Ds1302(HOUR_WRITE_ADDR, ((HOUR_RUN / 10) << 4) + (HOUR_RUN % 10)); //写入时
+ 136   1      }
+ 137          
+ 138          
+ 139          /*
+ 140           *  读取DS1302的时分秒
+ 141           */
+ 142          void DS1302_ReadTime()
+ 143          {
+ 144   1          unsigned char read_data, shi, ge;
+ 145   1          read_data = Read_Ds1302(SEC_READ_ADDR);
+ 146   1          shi = read_data >> 4;
+ 147   1          ge = read_data & 0x0F;
+ 148   1          SEC_RUN = shi * 10 + ge;
+ 149   1          read_data = Read_Ds1302(MIN_READ_ADDR);
+ 150   1          shi = read_data >> 4;
+ 151   1          ge = read_data & 0x0F;
+ 152   1          MIN_RUN = shi * 10 + ge;
+ 153   1          read_data = Read_Ds1302(HOUR_READ_ADDR);
+ 154   1          shi = read_data >> 4;
+ 155   1          ge = read_data & 0x0F;
+ 156   1          HOUR_RUN = shi * 10 + ge;
+ 157   1      }
+ 158          
+ 159          
+ 160          /*
+ 161           *  更新数码管的显示内容
+ 162           */
+ 163          void SegUpdate()
+ 164          {
+ 165   1          if(SYS_STATE == IDLE){  //正常显示状态
+ 166   2              DS1302_ReadTime();
+ 167   2              SEG_CONTENT[0] = HOUR_RUN / 10;
+ 168   2              SEG_CONTENT[1] = HOUR_RUN % 10;
+ 169   2              SEG_CONTENT[3] = MIN_RUN / 10;
+ 170   2              SEG_CONTENT[4] = MIN_RUN % 10;
+ 171   2              SEG_CONTENT[6] = SEC_RUN / 10;
+ 172   2              SEG_CONTENT[7] = SEC_RUN % 10;
+ 173   2          } 
+ 174   1      }
+ 175          
+ 176          
+ 177          /*
+C51 COMPILER V9.57.0.0   MAIN                                                              07/27/2020 10:07:35 PAGE 4   
+
+ 178           *  时间设置时的闪烁
+ 179           */
+ 180          void SetBlink()
+ 181          {
+ 182   1          if(SETTING_MODE == RUNTIME_SETTING){
+ 183   2              SEG_CONTENT[0] = (BLINK && SYS_STATE == HOUR_SETTING)? 12 : HOUR_RUN / 10;
+ 184   2              SEG_CONTENT[1] = (BLINK && SYS_STATE == HOUR_SETTING)? 12 : HOUR_RUN % 10;
+ 185   2              SEG_CONTENT[3] = (BLINK && SYS_STATE == MIN_SETTING)? 12 : MIN_RUN / 10;
+ 186   2              SEG_CONTENT[4] = (BLINK && SYS_STATE == MIN_SETTING)? 12 : MIN_RUN % 10;
+ 187   2              SEG_CONTENT[6] = (BLINK && SYS_STATE == SEC_SETTING)? 12 : SEC_RUN / 10;
+ 188   2              SEG_CONTENT[7] = (BLINK && SYS_STATE == SEC_SETTING)? 12 : SEC_RUN % 10;
+ 189   2          }
+ 190   1          else if(SETTING_MODE == ALARM_SETTING){
+ 191   2              SEG_CONTENT[0] = (BLINK && SYS_STATE == HOUR_SETTING)? 12 : HOUR_ALARM / 10;
+ 192   2              SEG_CONTENT[1] = (BLINK && SYS_STATE == HOUR_SETTING)? 12 : HOUR_ALARM % 10;
+ 193   2              SEG_CONTENT[3] = (BLINK && SYS_STATE == MIN_SETTING)? 12 : MIN_ALARM / 10;
+ 194   2              SEG_CONTENT[4] = (BLINK && SYS_STATE == MIN_SETTING)? 12 : MIN_ALARM % 10;
+ 195   2              SEG_CONTENT[6] = (BLINK && SYS_STATE == SEC_SETTING)? 12 : SEC_ALARM / 10;
+ 196   2              SEG_CONTENT[7] = (BLINK && SYS_STATE == SEC_SETTING)? 12 : SEC_ALARM % 10;
+ 197   2          }
+ 198   1      }
+ 199          
+ 200          /*
+ 201           *  状态转换
+ 202           */
+ 203          void NextState()
+ 204          {
+ 205   1          if(SYS_STATE == IDLE)   SYS_STATE = HOUR_SETTING;
+ 206   1          else if(SYS_STATE == HOUR_SETTING) SYS_STATE = MIN_SETTING;
+ 207   1          else if(SYS_STATE == MIN_SETTING) SYS_STATE = SEC_SETTING;
+ 208   1          else if(SYS_STATE == SEC_SETTING){
+ 209   2              if(SETTING_MODE == RUNTIME_SETTING) DS1302_WriteTime(); //写入改后的时间
+ 210   2              SYS_STATE = IDLE;
+ 211   2              SETTING_MODE = NONE_SETTING;
+ 212   2          }
+ 213   1          else    SYS_STATE = IDLE;
+ 214   1      }
+ 215          
+ 216          
+ 217          /*
+ 218           *  加减时间处理    0~23h 0~59min 0~59s
+ 219           *  @param
+ 220           *  mode 加/减模式
+ 221           */
+ 222          void Add_or_Sub(unsigned char mode)
+ 223          {
+ 224   1          if(mode == TIME_ADD){
+ 225   2              switch (SYS_STATE)
+ 226   2              {
+ 227   3              case HOUR_SETTING:
+ 228   3                  if(SETTING_MODE == RUNTIME_SETTING && HOUR_RUN < 23)    HOUR_RUN ++;
+ 229   3                  else if(SETTING_MODE == ALARM_SETTING && HOUR_ALARM < 23)   HOUR_ALARM ++;
+ 230   3                  break;
+ 231   3              case MIN_SETTING:
+ 232   3                  if(SETTING_MODE == RUNTIME_SETTING && MIN_RUN < 59)    MIN_RUN ++;
+ 233   3                  else if(SETTING_MODE == ALARM_SETTING && MIN_ALARM < 59)   MIN_ALARM ++;
+ 234   3                  break;
+ 235   3              case SEC_SETTING:
+ 236   3                  if(SETTING_MODE == RUNTIME_SETTING && SEC_RUN < 59)    SEC_RUN ++;
+ 237   3                  else if(SETTING_MODE == ALARM_SETTING && SEC_ALARM < 59)   SEC_ALARM ++;
+ 238   3                  break;
+ 239   3              default:
+C51 COMPILER V9.57.0.0   MAIN                                                              07/27/2020 10:07:35 PAGE 5   
+
+ 240   3                  break;
+ 241   3              }
+ 242   2          }
+ 243   1          else if(mode == TIME_SUB){
+ 244   2              switch (SYS_STATE)
+ 245   2              {
+ 246   3              case HOUR_SETTING:
+ 247   3                  if(SETTING_MODE == RUNTIME_SETTING && HOUR_RUN > 0)    HOUR_RUN --;
+ 248   3                  else if(SETTING_MODE == ALARM_SETTING && HOUR_ALARM >0)   HOUR_ALARM --;
+ 249   3                  break;
+ 250   3              case MIN_SETTING:
+ 251   3                  if(SETTING_MODE == RUNTIME_SETTING && MIN_RUN > 0)    MIN_RUN --;
+ 252   3                  else if(SETTING_MODE == ALARM_SETTING && MIN_ALARM > 0)   MIN_ALARM --;
+ 253   3                  break;
+ 254   3              case SEC_SETTING:
+ 255   3                  if(SETTING_MODE == RUNTIME_SETTING && SEC_RUN > 0)    SEC_RUN --;
+ 256   3                  else if(SETTING_MODE == ALARM_SETTING && SEC_ALARM > 0)   SEC_ALARM --;
+ 257   3                  break;
+ 258   3              default:
+ 259   3                  break;
+ 260   3              }
+ 261   2          }
+ 262   1      }
+ 263          
+ 264          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1162    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     24    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

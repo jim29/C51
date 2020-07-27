@@ -3,17 +3,19 @@
         {
             "name": "Win32",
             "includePath": [
+                "${workspaceFolder}/**",
                 "D:/Keil_v5/C51/INC",
-                "${workspaceFolder}/exercise4/Code/**",
                 "D:/Keil_v5/C51/INC/STC"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE",
-                "code=const"
+                "code=const",
+                "interrupt=/**/",
+                "bit=int",
+                "sbit=unsigned char"
             ],
-            "cStandard": "c11",
             "intelliSenseMode": "msvc-x64"
         }
     ],

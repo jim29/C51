@@ -1,0 +1,61 @@
+C51 COMPILER V9.57.0.0   SYSTEM                                                            07/27/2020 10:07:35 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SYSTEM
+OBJECT MODULE PLACED IN .\Objects\system.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\system.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEND
+                    - PRINT(.\Listings\system.lst) TABS(2) OBJECT(.\Objects\system.obj)
+
+line level    source
+
+   1          #include <system.h>
+   2          #include <intrins.h>
+   3          #include <timer.h>
+   4          
+   5          /*
+   6           *  锁存器控制
+   7           * @param
+   8           * ID 元件序号
+   9           * val  P0口值
+  10           */
+  11          void LatchCtrl(unsigned char ID, unsigned char val)
+  12          {
+  13   1          P0 = val;
+  14   1          P2 = ID << 5;
+  15   1          _nop_();
+  16   1          _nop_();
+  17   1          _nop_();
+  18   1          P2 &= 0x1F;
+  19   1          P0 = 0x00;
+  20   1      }
+  21          
+  22          extern unsigned char SYS_STATE;
+  23          extern unsigned char SETTING_MODE;
+  24          /*
+  25           *  系统初始化,关闭蜂鸣器,LED,继电器,数码管
+  26           *  初始化计时器T0
+  27           *  状态初值
+  28           */
+  29          void SysInit()
+  30          {
+  31   1          LatchCtrl(ULN_ID, 0x00);    //关闭蜂鸣器，继电器
+  32   1          LatchCtrl(LED_ID, 0xFF);    //关闭LED
+  33   1          LatchCtrl(SEG_COM_ID, 0x00);    //关闭数码管
+  34   1          Timer0Init();
+  35   1          SYS_STATE =IDLE;
+  36   1          SETTING_MODE = NONE_SETTING;
+  37   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     48    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
