@@ -1,0 +1,61 @@
+C51 COMPILER V9.57.0.0   SYSTEM                                                            08/03/2020 16:08:06 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SYSTEM
+OBJECT MODULE PLACED IN .\Objects\system.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\system.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEND
+                    - PRINT(.\Listings\system.lst) TABS(2) OBJECT(.\Objects\system.obj)
+
+line level    source
+
+   1          #include <system.h>
+   2          #include <intrins.h>
+   3          
+   4          void some_nop()
+   5          {
+   6   1        _nop_();
+   7   1        _nop_();
+   8   1        _nop_();
+   9   1        _nop_();
+  10   1        _nop_();
+  11   1        _nop_();
+  12   1        _nop_();
+  13   1        _nop_();
+  14   1        _nop_();
+  15   1        _nop_();
+  16   1        _nop_();
+  17   1        _nop_();
+  18   1      }
+  19          
+  20          
+  21          
+  22          void latch_ctrl(unsigned char ID, unsigned char val)
+  23          {
+  24   1        P0 = val;
+  25   1        P2 = P2 | (ID << 5);
+  26   1        some_nop();
+  27   1        P2 = P2 & 0x1F;
+  28   1        P0 = 0x00;
+  29   1      }
+  30          
+  31          
+  32          void system_init()
+  33          {
+  34   1        latch_ctrl(LED_ID, 0xFF);
+  35   1        latch_ctrl(SEG_COM_ID, 0x00);
+  36   1        latch_ctrl(ULN_ID, 0x00);
+  37   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     50    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

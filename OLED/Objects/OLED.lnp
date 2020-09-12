@@ -1,0 +1,7 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\oled.obj",
+".\Objects\system.obj",
+".\Objects\ds1302.obj" 
+TO ".\Objects\OLED" 
+PRINT(".\Listings\OLED.m51") RAMSIZE(256) 

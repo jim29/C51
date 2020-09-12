@@ -1,0 +1,43 @@
+C51 COMPILER V9.57.0.0   SEGMENT                                                           08/03/2020 16:08:06 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE SEGMENT
+OBJECT MODULE PLACED IN .\Objects\segment.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\segment.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEN
+                    -D PRINT(.\Listings\segment.lst) TABS(2) OBJECT(.\Objects\segment.obj)
+
+line level    source
+
+   1          #include <segment.h>
+   2          code unsigned char SEG_TABLE[] = {
+   3            0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90
+   4          };
+   5          extern unsigned char SEG_CONTENT[];
+   6          
+   7          void seg_disp(unsigned char i, unsigned  char val)
+   8          {
+   9   1        latch_ctrl(SEG_COM_ID, 1 << i);
+  10   1        latch_ctrl(SEG_SEC_ID, SEG_TABLE[val]);
+  11   1      }
+  12          
+  13          void seg_fresh()
+  14          {
+  15   1        static unsigned char i = 0;
+  16   1        seg_disp(i, SEG_CONTENT[i]);
+  17   1        i ++;
+  18   1        if(i >= 8) i = 0; 
+  19   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     56    ----
+   CONSTANT SIZE    =     10    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

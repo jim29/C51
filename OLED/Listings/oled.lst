@@ -1,0 +1,225 @@
+C51 COMPILER V9.57.0.0   OLED                                                              08/22/2020 10:54:22 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE OLED
+OBJECT MODULE PLACED IN .\Objects\oled.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\oled.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code;.\Code) DEBUG OBJECTE
+                    -XTEND PRINT(.\Listings\oled.lst) TABS(2) OBJECT(.\Objects\oled.obj)
+
+line level    source
+
+   1          //////////////////////////////////////////////////////////////////////////////////   
+   2          //本程序只供学习使用，未经作者许可，不得用于其它任何用途
+   3          //中景园电子
+   4          //店铺地址：http://shop73023976.taobao.com/?spm=2013.1.0.0.M4PqC2
+   5          //
+   6          //  文 件 名   : main.c
+   7          //  版 本 号   : v2.0
+   8          //  作    者   : HuangKai
+   9          //  生成日期   : 2014-0101
+  10          //  最近修改   : 
+  11          //  功能描述   : OLED IIC接口演示例程(51系列)
+  12          //              说明: 
+  13          //              ----------------------------------------------------------------
+  14          //              GND    电源地
+  15          //              VCC  接5V或3.3v电源
+  16          //              D0   P1^0（SCL_OL）
+  17          //              D1   P1^1（SDA_OL）
+  18          //              RES  接高
+  19          //              DC   接地
+  20          //              CS   接地                
+  21          //              ----------------------------------------------------------------
+  22          // 修改历史   :
+  23          // 日    期   : 
+  24          // 作    者   : HuangKai
+  25          // 修改内容   : 创建文件
+  26          //版权所有，盗版必究。
+  27          //Copyright(C) 中景园电子2014/3/16
+  28          //All rights reserved
+  29          //******************************************************************************/
+  30          #include <oled.h>
+  31          
+  32          
+  33          /**********************************************
+  34          //IIC Start
+  35          **********************************************/
+  36          void IIC_Start()
+  37          {
+  38   1         SCL_OL = high;   
+  39   1         SDA_OL = high;
+  40   1         SDA_OL = low;
+  41   1         SCL_OL = low;
+  42   1      }
+  43          
+  44          /**********************************************
+  45          //IIC Stop
+  46          **********************************************/
+  47          void IIC_Stop()
+  48          {
+  49   1         SCL_OL = low;
+  50   1         SDA_OL = low;
+  51   1         SCL_OL = high;
+  52   1         SDA_OL = high;
+  53   1      }
+  54          /**********************************************
+C51 COMPILER V9.57.0.0   OLED                                                              08/22/2020 10:54:22 PAGE 2   
+
+  55          // IIC Write byte
+  56          **********************************************/
+  57          void Write_IIC_Byte(unsigned char IIC_Byte)
+  58          {
+  59   1        unsigned char i;
+  60   1        for(i=0;i<8;i++)    
+  61   1        {
+  62   2          if(IIC_Byte & 0x80)
+  63   2          SDA_OL=high;
+  64   2          else
+  65   2          SDA_OL=low;
+  66   2          SCL_OL=high;
+  67   2          SCL_OL=low;
+  68   2          IIC_Byte<<=1;
+  69   2        }
+  70   1        SDA_OL=1;
+  71   1        SCL_OL=1;
+  72   1        SCL_OL=0;
+  73   1      }
+  74          /**********************************************
+  75          // IIC Write Command
+  76          **********************************************/
+  77          void Write_IIC_Command(unsigned char IIC_Command)
+  78          {
+  79   1         IIC_Start();
+  80   1         Write_IIC_Byte(0x78);            //Slave address,SA0=0
+  81   1         Write_IIC_Byte(0x00);      //write command
+  82   1         Write_IIC_Byte(IIC_Command); 
+  83   1         IIC_Stop();
+  84   1      }
+  85          /**********************************************
+  86          // IIC Write Data
+  87          **********************************************/
+  88          void Write_IIC_Data(unsigned char IIC_Data)
+  89          {
+  90   1         IIC_Start();
+  91   1         Write_IIC_Byte(0x78);      //D/C#=0; R/W#=0
+  92   1         Write_IIC_Byte(0x40);      //write data
+  93   1         Write_IIC_Byte(IIC_Data);
+  94   1         IIC_Stop();
+  95   1      }
+  96          /********************************************
+  97          // Set_Background
+  98          ********************************************/
+  99          void Set_Background()
+ 100          {
+ 101   1        unsigned char m,n;
+ 102   1        for(m=0;m<8;m++)
+ 103   1        {
+ 104   2          Write_IIC_Command(0xb0+m);    //page0-page1
+ 105   2          Write_IIC_Command(0x00);    //low column start address
+ 106   2          Write_IIC_Command(0x10);    //high column start address
+ 107   2          for(n=0;n<128;n++)
+ 108   2          {
+ 109   3            if((n == 63 || n == 64 || n== 65) && (m == 2))
+ 110   3            {
+ 111   4              Write_IIC_Data(0x38);
+ 112   4            }
+ 113   3            else if((n == 63 || n == 64 || n== 65) && (m == 5))
+ 114   3            {
+ 115   4              Write_IIC_Data(0x70);
+ 116   4            }
+C51 COMPILER V9.57.0.0   OLED                                                              08/22/2020 10:54:22 PAGE 3   
+
+ 117   3            else Write_IIC_Data(0x00);
+ 118   3          }
+ 119   2        }
+ 120   1      }
+ 121          
+ 122          
+ 123          /**************OLED Init*************/
+ 124          void Initial_M096128x64_ssd1306()
+ 125          {
+ 126   1        Write_IIC_Command(0xAE);   //display off
+ 127   1        Write_IIC_Command(0x20);  //Set Memory Addressing Mode  
+ 128   1        Write_IIC_Command(0x10);  //00,Horizontal Addressing Mode;01,Vertical Addressing Mode;10,Page Addressing M
+             -ode (RESET);11,Invalid
+ 129   1        Write_IIC_Command(0xb0);  //Set Page Start Address for Page Addressing Mode,0-7
+ 130   1        Write_IIC_Command(0xc8);  //Set COM Output Scan Direction
+ 131   1        Write_IIC_Command(0x00);//---set low column address
+ 132   1        Write_IIC_Command(0x10);//---set high column address
+ 133   1        Write_IIC_Command(0x40);//--set start line address
+ 134   1        Write_IIC_Command(0x81);//--set contrast control register
+ 135   1        Write_IIC_Command(0xdf);
+ 136   1        Write_IIC_Command(0xa1);//--set segment re-map 0 to 127
+ 137   1        Write_IIC_Command(0xa6);//--set normal display
+ 138   1        Write_IIC_Command(0xa8);//--set multiplex ratio(1 to 64)
+ 139   1        Write_IIC_Command(0x3F);//
+ 140   1        Write_IIC_Command(0xa4);//0xa4,Output follows RAM content;0xa5,Output ignores RAM content
+ 141   1        Write_IIC_Command(0xd3);//-set display offset
+ 142   1        Write_IIC_Command(0x00);//-not offset
+ 143   1        Write_IIC_Command(0xd5);//--set display clock divide ratio/oscillator frequency
+ 144   1        Write_IIC_Command(0xf0);//--set divide ratio
+ 145   1        Write_IIC_Command(0xd9);//--set pre-charge period
+ 146   1        Write_IIC_Command(0x22); //
+ 147   1        Write_IIC_Command(0xda);//--set com pins hardware configuration
+ 148   1        Write_IIC_Command(0x12);
+ 149   1        Write_IIC_Command(0xdb);//--set vcomh
+ 150   1        Write_IIC_Command(0x20);//0x20,0.77xVcc
+ 151   1        Write_IIC_Command(0x8d);//--set DC-DC enable
+ 152   1        Write_IIC_Command(0x14);//
+ 153   1        Write_IIC_Command(0xaf);//--turn on oled panel 
+ 154   1      }
+ 155          
+ 156          /*
+ 157          * 设置显示数字  测试
+ 158          * val[] 显示数据矩阵
+ 159          * x     col位置 SEG_X
+ 160          */
+ 161          void Num_Display(unsigned char val[], unsigned char x)
+ 162          {
+ 163   1        unsigned char m,n,i = 0;
+ 164   1        for(m=1;m<7;m++)
+ 165   1        {
+ 166   2          Write_IIC_Command(0xb0+m);    //page-page7
+ 167   2          Write_IIC_Command(0x00 + (x % 16));   //low column start address
+ 168   2          Write_IIC_Command(0x10 + (x / 16));   //high column start address
+ 169   2          for(n = 0; n < 21; n++)
+ 170   2          {
+ 171   3            Write_IIC_Data(val[i]);
+ 172   3            i ++;
+ 173   3          }
+ 174   2        }
+ 175   1      }
+ 176          
+ 177          
+C51 COMPILER V9.57.0.0   OLED                                                              08/22/2020 10:54:22 PAGE 4   
+
+ 178          /*数字灭*/
+ 179          void Num_OFF(unsigned char x)
+ 180          {
+ 181   1        unsigned char m,n,i = 0;
+ 182   1        for(m=1;m<7;m++)
+ 183   1        {
+ 184   2          Write_IIC_Command(0xb0+m);    //page-page7
+ 185   2          Write_IIC_Command(0x00 + (x % 16));   //low column start address
+ 186   2          Write_IIC_Command(0x10 + (x / 16));   //high column start address
+ 187   2          for(n = 0; n < 21; n++)
+ 188   2          {
+ 189   3            Write_IIC_Data(0x00);
+ 190   3            i ++;
+ 191   3          }
+ 192   2        }
+ 193   1      }
+ 194          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    412    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

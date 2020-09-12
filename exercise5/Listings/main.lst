@@ -1,0 +1,110 @@
+C51 COMPILER V9.57.0.0   MAIN                                                              08/03/2020 16:08:06 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code) DEBUG OBJECTEXTEND P
+                    -RINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          /* 模拟题 */
+   2          #include <system.h>
+   3          #include <iic.h>
+   4          #include <segment.h>
+   5          
+   6          code unsigned char ADDR_READ = 0xA1;
+   7          code unsigned char ADDR_WRITE = 0xA0;
+   8          
+   9          unsigned char prom_read(unsigned char addr);
+  10          void prom_write(unsigned char addr, unsigned char val);
+  11          void delay_5ms();
+  12          unsigned char num;
+  13          unsigned char SEG_CONTENT[] = {0, 0, 0, 0, 0, 0, 0, 0};
+  14          
+  15          void main()
+  16          {
+  17   1        system_init();
+  18   1        prom_write(0x00, 12);
+  19   1        prom_write(0x01, 34);
+  20   1        prom_write(0x02, 56);
+  21   1        prom_write(0x03, 78);
+  22   1        num = prom_read(0x00);
+  23   1        num = prom_read(0x01);
+  24   1        num = prom_read(0x02);
+  25   1        num = prom_read(0x03);
+  26   1        while(1){
+  27   2          SEG_CONTENT[0] = num / 10;
+  28   2          SEG_CONTENT[1] = num % 10;
+  29   2          seg_fresh();
+  30   2          delay_5ms();
+  31   2        }
+  32   1      }
+  33          
+  34          
+  35          //写入一个字节ROM
+  36          void prom_write(unsigned char addr, unsigned char val)
+  37          {
+  38   1        iic_init();
+  39   1        iic_start();
+  40   1        iic_write_byte(ADDR_WRITE);
+  41   1        iic_wait_ack();
+  42   1        iic_write_byte(addr);
+  43   1        iic_wait_ack();
+  44   1        iic_write_byte(val);
+  45   1        iic_wait_ack();
+  46   1        iic_stop();
+  47   1        delay_5ms();
+  48   1      }
+  49          
+  50          
+  51          
+  52          //读取1个字节ROM
+  53          unsigned char prom_read(unsigned char addr)
+  54          {
+C51 COMPILER V9.57.0.0   MAIN                                                              08/03/2020 16:08:06 PAGE 2   
+
+  55   1        unsigned char ans;
+  56   1        iic_init();
+  57   1        iic_start();
+  58   1        iic_write_byte(ADDR_WRITE);
+  59   1        iic_wait_ack();
+  60   1        iic_write_byte(addr);
+  61   1        iic_wait_ack();
+  62   1        iic_start();
+  63   1        iic_write_byte(ADDR_READ);
+  64   1        iic_wait_ack();
+  65   1        ans = iic_read_byte();
+  66   1        iic_wait_no_ack();
+  67   1        iic_stop();
+  68   1        return ans;
+  69   1      }
+  70          
+  71          
+  72          //等待5ms
+  73          void delay_5ms()
+  74          {
+  75   1        unsigned char i, j;
+  76   1      
+  77   1        i = 59;
+  78   1        j = 90;
+  79   1        do
+  80   1        {
+  81   2          while (--j);
+  82   2        } while (--i);
+  83   1      }
+  84          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    194    ----
+   CONSTANT SIZE    =      2    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      9       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

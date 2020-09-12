@@ -1,0 +1,7 @@
+".\Objects\STARTUP.obj",
+".\Objects\main.obj",
+".\Objects\iic.obj",
+".\Objects\segment.obj",
+".\Objects\system.obj" 
+TO ".\Objects\exercise5" 
+PRINT(".\Listings\exercise5.m51") RAMSIZE(256) 

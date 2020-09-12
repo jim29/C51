@@ -1,0 +1,110 @@
+C51 COMPILER V9.57.0.0   DS1302                                                            08/22/2020 10:54:22 PAGE 1   
+
+
+C51 COMPILER V9.57.0.0, COMPILATION OF MODULE DS1302
+OBJECT MODULE PLACED IN .\Objects\ds1302.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\BIN\C51.EXE Code\ds1302.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Code;.\Code) DEBUG OBJEC
+                    -TEXTEND PRINT(.\Listings\ds1302.lst) TABS(2) OBJECT(.\Objects\ds1302.obj)
+
+line level    source
+
+   1          #include <ds1302.h>
+   2          #include <intrins.h>
+   3          
+   4          sbit SCK_DS=P1^7;   
+   5          sbit SDA_DS=P2^3;   
+   6          sbit RST = P1^3;                        
+   7          
+   8          
+   9          //满足DS1302时序的延时 
+  10          void SomeNop()
+  11          {
+  12   1        _nop_();
+  13   1        _nop_();
+  14   1        _nop_();
+  15   1        _nop_();
+  16   1        _nop_();
+  17   1        _nop_();
+  18   1        _nop_();
+  19   1        _nop_();
+  20   1        _nop_();
+  21   1        _nop_();
+  22   1        _nop_();
+  23   1        _nop_();
+  24   1      }
+  25          
+  26          
+  27          
+  28          void Write_Ds1302_Byte(unsigned  char temp) 
+  29          {
+  30   1        unsigned char i;
+  31   1        for (i=0;i<8;i++)       
+  32   1        { 
+  33   2          SCK_DS=0;
+  34   2          SDA_DS=temp&0x01;
+  35   2          temp>>=1; 
+  36   2          SCK_DS=1;
+  37   2        }
+  38   1      }   
+  39          
+  40          
+  41          void Write_Ds1302( unsigned char address,unsigned char dat )     
+  42          {
+  43   1        RST=0;
+  44   1        SomeNop();
+  45   1        SCK_DS=0;
+  46   1        SomeNop();
+  47   1        RST=1;  
+  48   1          SomeNop();  
+  49   1        Write_Ds1302_Byte(address); 
+  50   1        Write_Ds1302_Byte(dat);   
+  51   1        RST=0; 
+  52   1      }
+  53          
+  54          unsigned char Read_Ds1302 ( unsigned char address )
+C51 COMPILER V9.57.0.0   DS1302                                                            08/22/2020 10:54:22 PAGE 2   
+
+  55          {
+  56   1        unsigned char i,temp=0x00;
+  57   1        RST=0;
+  58   1        SomeNop();
+  59   1        SCK_DS=0;
+  60   1        SomeNop();
+  61   1        RST=1;
+  62   1        SomeNop();
+  63   1        Write_Ds1302_Byte(address);
+  64   1        for (i=0;i<8;i++)   
+  65   1        {   
+  66   2          SCK_DS=0;
+  67   2          temp>>=1; 
+  68   2          if(SDA_DS)
+  69   2          temp|=0x80; 
+  70   2          SCK_DS=1;
+  71   2        } 
+  72   1        RST=0;
+  73   1        SomeNop();
+  74   1        RST=0;
+  75   1        SCK_DS=0;
+  76   1        SomeNop();
+  77   1        SCK_DS=1;
+  78   1        SomeNop();
+  79   1        SDA_DS=0;
+  80   1        SomeNop();
+  81   1        SDA_DS=1;
+  82   1        SomeNop();
+  83   1        return (temp);      
+  84   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    113    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
